@@ -6,12 +6,12 @@
 
 * fuzz it.
 
-* improve the fuzzing efficiency.
+* improve the fuzzer for efficiency and smartness.
 
 ## 2) Retrospective analysis
 
-* Pick 3 different web servers
+* Pick 3 different web servers (look up cve's)
 
 * Find _memory corruption bugs_
 
-* Fuzz for these vulns
+* Try fuzz for these vulns
