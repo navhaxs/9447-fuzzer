@@ -1,7 +1,10 @@
+#!/usr/bin/env python3
 import socket
+import time
+import traceback
+from kitty.model import *
 from kitty.targets.server import ServerTarget
 from kitty.controllers.base import BaseController
-from kitty.model import *
 
 ####################################
 # About this file
@@ -17,7 +20,7 @@ from kitty.model import *
 
 ################# Data Model #################
 
-http_get_request = Template(name='HTTP_GET_V3', fields=[
+http_get_request_template = Template(name='HTTP_GET_V3', fields=[
     String('GET', name='method', fuzzable=False),   # 1. Method - a string with the value "GET"
     Delimiter(' ', name='space1', fuzzable=False),  # 1.a The space between Method and Path
     String('/index.html', name='path'),             # 2. Path - a string with the value "/index.html"
@@ -25,10 +28,10 @@ http_get_request = Template(name='HTTP_GET_V3', fields=[
     String('HTTP', name='protocol name'),           # 3.a Protocol Name - a string with the value "HTTP"
     Delimiter('/', name='fws1'),                    # 3.b The '/' after "HTTP"
     Dword(1, name='major version',                  # 3.c Major Version - a number with the value 1
-          encoder=ENC_INT_DEC)                      # encode the major version as decimal number
+          encoder=ENC_INT_DEC),                      # encode the major version as decimal number
     Delimiter('.', name='dot1'),                    # 3.d The '.' between 1 and 1
     Dword(1, name='major version',                  # 3.e Minor Version - a number with the value 1
-          encoder=ENC_INT_DEC)                      # encode the minor version as decimal number
+          encoder=ENC_INT_DEC),                      # encode the minor version as decimal number
     Static('\r\n\r\n', name='eom')                  # 4. The double "new lines" ("\r\n\r\n") at the end of the request
 ])
 
@@ -126,17 +129,18 @@ class LocalProcessController(BaseController):
 ################# Actual fuzzer code #################
 target = TcpTarget('Example Target')
 
-controller = MyClientController()
+# Define controller
+controller = LocalProcessController()
 target.set_controller(controller)
 
+# Define model
 model = GraphModel()
-model.connect(get_name_response_template)
-fuzzer = ClientFuzzer()
+model.connect(http_get_request_template) 
+
+# Define fuzzer
+fuzzer = ServerFuzzer()
 fuzzer.set_model(model)
 fuzzer.set_target(target)
-fuzzer.set_interface(WebInterface())
-
-my_stack = MySpecialStack()
-my_stack.set_fuzzer(fuzzer)
+fuzzer.set_interface(WebInterface(port=web_port))
+#fuzzer.set_delay_between_tests(0.2)
 fuzzer.start()
-my_stack.start()
