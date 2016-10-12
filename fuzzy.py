@@ -76,6 +76,9 @@ class MyController(BaseController):
         self._server_stop_cmd = server_stop_cmd 
 
     def pre_test(self, test_number):
+        ## call the super
+        super(MyController, self).pre_test(test_number)
+
         '''start the victim'''
         ## stop the process if it still runs for some reason
         if self._process:
@@ -89,9 +92,6 @@ class MyController(BaseController):
         self.report.add('process_path', self._process_path)
         self.report.add('process_args', self._process_args)
         self.report.add('process_id', self._process.pid)
-
-        ## call the super
-        super(MyController, self).pre_test(test_number)
 
 
     def post_test(self):
