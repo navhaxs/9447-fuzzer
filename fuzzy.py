@@ -2,11 +2,13 @@
 import socket
 import time
 import traceback
-from kitty.model import *
+from subprocess import *
 from kitty.targets.server import ServerTarget
+from kitty.model import *
 from kitty.fuzzers import ServerFuzzer
 from kitty.controllers.base import BaseController
-from katnip.controllers.client.process import ClientProcessController
+# from katnip.controllers.client.process import MyController
+from katnip.targets.tcp import TcpTarget
 from kitty.interfaces import WebInterface
 
 
@@ -35,109 +37,61 @@ http_get_request_template = Template(name='HTTP_GET_V3', fields=[
 
 ################# Target #################
 
-class TcpTarget(ServerTarget):
-    '''
-    TcpTarget is implementation of a TCP target for the ServerFuzzer
-    '''
-
-    def __init__(self, name, host, port, timeout=None, logger=None):
-        '''
-        :param name: name of the object
-        :param host: hostname of the target (the TCP server)
-        :param port: port of the target
-        :param timeout: socket timeout (default: None)
-        :param logger: logger for this object (default: None)
-        '''
-        ## Call ServerTarget constructor
-        super(TcpTarget, self).__init__(name, logger)
-        ## hostname of the target (the TCP server)
-        self.host = host
-        ## port of the target
-        self.port = port
-        if (host is None) or (port is None):
-            raise ValueError('host and port may not be None')
-        ## socket timeout (default: None)
-        self.timeout = timeout
-        ## the TCP socket
-        self.socket = None
-
-    def pre_test(self, test_num):
-        '''
-        prepare to the test, create a socket
-        '''
-        ## call the super (report preparation etc.)
-        super(TcpTarget, self).pre_test(test_num)
-        ## only create a socket if we don't have one
-        if self.socket is None:
-            sock = self._get_socket()
-            ## set the timeout
-            if self.timeout is not None:
-                sock.settimeout(self.timeout)
-            ## connect to socket
-            sock.connect((self.host, self.port))
-            ## our TCP socket
-        self.socket = sock
-
-    def _get_socket(self):
-        '''get a socket object'''
-        ## Create a TCP socket
-        return socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    def post_test(self, test_num):
-        '''
-        Called after a test is completed, perform cleanup etc.
-        '''
-        ## Call super, as it prepares the report
-        super(TcpTarget, self).post_test(test_num)
-        ## close socket
-        if self.socket is not None:
-            self.socket.close()
-            ## set socket to none
-            self.socket = None
-
-    def _send_to_target(self, data):
-        self.socket.send(data)
-
-    def _receive_from_target(self):
-        return self.socket.recv(10000)
+# using the TcpTarget already implemented in katnip
 
 ################# Controller Implementation #################
 
-class LocalProcessController(BaseController):
+class MyController(BaseController):
     '''
-    LocalProcessController a process that was opened using subprocess.Popen.
+    MyController is a process that was opened using subprocess.Popen.
     The process will be created for each test and killed at the end of the test
     '''
+    
+    _server_start_cmd = ""
+    _server_stop_cmd = ""
 
-    def __init__(self, name, process_path, process_args, logger=None):
+    def __init__(self, name, main_process_path,
+                server_start_cmd,
+                server_stop_cmd,
+                process_args,
+                process_env,
+                logger=None):
         '''
         :param name: name of the object
         :param process_path: path to the target executable
         :param process_args: arguments to pass to the process
         :param logger: logger for this object (default: None)
         '''
-        super(ClientProcessController, self).__init__(name, logger)
-        assert(process_path)
-        assert(os.path.exists(process_path))
-        self._process_path = process_path
-        self._process_name = os.path.basename(process_path)
+        super(MyController, self).__init__(name, logger)
+        assert(main_process_path)
+        assert(os.path.exists(main_process_path))
+        if process_env is None:
+            process_env = os.environ.copy()
+        self._process_path = main_process_path
+        self._process_name = os.path.basename(main_process_path)
         self._process_args = process_args
         self._process = None
+        self._process_env = process_env
+        self._server_start_cmd = server_start_cmd
+        self._server_stop_cmd = server_stop_cmd 
 
-
-    def pre_test(self, test_num):
+    def pre_test(self, test_number):
         '''start the victim'''
         ## stop the process if it still runs for some reason
         if self._process:
             self._stop_process()
-        cmd = [self._process_path] + self._process_args
+
         ## start the process
-        self._process = Popen(cmd, stdout=PIPE, stderr=PIPE)
+        self._process = Popen(self._server_start_cmd, stdout=PIPE, stderr=PIPE)
+
         ## add process information to the report
         self.report.add('process_name', self._process_name)
         self.report.add('process_path', self._process_path)
         self.report.add('process_args', self._process_args)
         self.report.add('process_id', self._process.pid)
+
+        ## call the super
+        super(MyController, self).pre_test(test_number)
 
 
     def post_test(self):
@@ -154,7 +108,7 @@ class LocalProcessController(BaseController):
         self.report.add('failed', self._process.returncode != 0)
         self._process = None
         ## call the super
-        super(ClientProcessController, self).post_test()
+        super(MyController, self).post_test()
 
     def teardown(self):
         '''
@@ -162,34 +116,40 @@ class LocalProcessController(BaseController):
         '''
         self._stop_process()
         self._process = None
-        super(ClientProcessController, self).teardown()
+        super(MyController, self).teardown()
 
+        
     def _stop_process(self):
         if self._is_victim_alive():
-            self._process.terminate()
+
+            ## execute the stop command
+            self._process = Popen(self._server_stop_cmd, stdout=PIPE, stderr=PIPE)
             time.sleep(0.5)
+        
+
             if self._is_victim_alive():
-                self._process.kill()
+                self._process.terminate()
                 time.sleep(0.5)
                 if self._is_victim_alive():
-                    raise Exception('Failed to kill client process')
+                    self._process.kill()
+                    time.sleep(0.5)
+                    if self._is_victim_alive():
+                        raise Exception('Failed to kill client process')
 
     def _is_victim_alive(self):
         return self._process and (self._process.poll() is None)
-
+    
 ################# Actual fuzzer runner code #################
-target = TcpTarget('Example Target', 'localhost', 8080)
 
-# Define controller
-#controller = LocalProcessController('Example Controller', 'lswsctrl', '/home/jz/root/bin/', '')
-env = os.environ.copy()
-controller = ClientProcessController(
-        'ServerController',
-        '/home/jz/root/bin/lswsctrl',
-        ['http://localhost:8082/fuzzed'],
-        process_env=env
-    )
-
+# Define target and controller
+target = TcpTarget(name='example_target', host='localhost', port=8088)
+controller = MyController(name='ServerController',
+        main_process_path="/usr/local/lsws/bin/openlitespeed",
+        server_start_cmd=["/usr/local/lsws/bin/lswsctrl","start"],
+        server_stop_cmd=["/usr/local/lsws/bin/lswsctrl","stop"],
+        process_args=[],
+        process_env=None,
+        logger=None)
 target.set_controller(controller)
 
 # Define model
@@ -198,8 +158,11 @@ model.connect(http_get_request_template)
 
 # Define fuzzer
 fuzzer = ServerFuzzer()
+fuzzer.set_interface(WebInterface(host='0.0.0.0', port=26000))
 fuzzer.set_model(model)
 fuzzer.set_target(target)
-fuzzer.set_interface(WebInterface(host='0.0.0.0', port=26000))
 #fuzzer.set_delay_between_tests(0.2)
 fuzzer.start()
+print('-------------- done with fuzzing -----------------')
+raw_input('press enter to exit')
+fuzzer.stop()
