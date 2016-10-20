@@ -1,0 +1,13 @@
+Template(name='HTTP_GET_REQUEST_V1', fields=[
+    String('GET', name='method', fuzzable= False),               
+    Delimiter(' ', name='space1', fuzzable= False),              
+    String('/index.html', name='path'),         
+    Delimiter(' ', name='space2'),             
+    String('HTTP', name='protocol name'),      
+    Delimiter('/', name='fws1'),               
+    Dword(1, name='major version', encoder=ENC_INT_DEC),
+    Delimiter('.', name='dot1'),               
+    Dword(1, name='minor version', encoder=ENC_INT_DEC),
+    Delimiter('\r\n\r\n', name='eom'),
+ 
+])
