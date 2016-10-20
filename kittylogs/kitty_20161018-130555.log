@@ -1,0 +1,42 @@
+[2016-10-18 13:05:55,862] [INFO] [base._load_session] -> No session loaded
+[2016-10-18 13:05:55,863] [INFO] [graph.hash] -> hash of template HTTP_GET_V3 is -6596374078732469767
+[2016-10-18 13:05:55,863] [INFO] [graph.hash] -> hash of model is -148721428975338955
+[2016-10-18 13:05:55,864] [INFO] [base._start_message] -> 
+                 --------------------------------------------------
+                 Starting fuzzing session
+                 Target: TcpTarget
+                 UI: WebInterface listening on 0.0.0.0:26000
+                 Log: ./kittylogs/kitty_20161018-130555.log
+
+                 Total possible mutation count: 390
+                 Fuzzing the mutation range: 0 to 389
+                 --------------------------------------------------
+                                 Happy hacking
+                 --------------------------------------------------
+            
+[2016-10-18 13:05:55,865] [INFO] [base.start] -> Performing environment test
+[2016-10-18 13:05:55,868] [INFO] [base._test_info] -> Current test: -1
+[2016-10-18 13:05:55,868] [INFO] [server.transmit] -> request(28): 474554202f696e6465782e68746d6c20485454502f312e310d0a0d0a
+[2016-10-18 13:05:56,371] [INFO] [server._test_environment] -> Environment test failed
+[2016-10-18 13:05:56,372] [ERROR] [base.start] -> Error occurred while fuzzing: Exception('You cannot add the key failed directly, use failed(reason)',)
+[2016-10-18 13:05:56,372] [ERROR] [base.start] -> Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/kitty/fuzzers/base.py", line 292, in start
+    self._test_environment()
+  File "/usr/local/lib/python2.7/dist-packages/kitty/fuzzers/server.py", line 53, in _test_environment
+    if self._run_sequence(sequence):
+  File "/usr/local/lib/python2.7/dist-packages/kitty/fuzzers/server.py", line 75, in _run_sequence
+    return self._post_test()
+  File "/usr/local/lib/python2.7/dist-packages/kitty/fuzzers/base.py", line 339, in _post_test
+    self.target.post_test(self.model.current_index())
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 80, in post_test
+    super(TcpTarget, self).post_test(test_num)
+  File "/usr/local/lib/python2.7/dist-packages/kitty/targets/server.py", line 128, in post_test
+    super(ServerTarget, self).post_test(test_num)
+  File "/usr/local/lib/python2.7/dist-packages/kitty/targets/base.py", line 92, in post_test
+    self.controller.post_test()
+  File "./fuzzy.py", line 108, in post_test
+    self.report.add('failed', self._process.returncode != 0)
+  File "/usr/local/lib/python2.7/dist-packages/kitty/data/report.py", line 140, in add
+    raise Exception('You cannot add the key %s directly, use %s' % (key, self.reserved_keys[key]))
+Exception: You cannot add the key failed directly, use failed(reason)
+

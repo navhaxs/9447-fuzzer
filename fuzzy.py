@@ -24,15 +24,71 @@ from kitty.interfaces import WebInterface
 # Lastly is the actual fuzzer runner code.
 #
 
-################# Data Model #################
-
-http_get_request_template = Template(name='HTTP_GET_V3', fields=[
+################# Data Models #################
+"""
+http_get_request_template = Template(name='HTTP_GET_TEMPLATE', fields=[
     String('GET', name='method'),           # 1. Method - a string with the value "GET"
     Delimiter(' ', name='space1'),          # 1.a The space between Method and Path
     String('/index.html', name='path'),     # 2. Path - a string with the value "/index.html"
     Delimiter(' ', name='space2'),          # 2.a. The space between Path and Protocol
     String('HTTP/1.1', name='protocol'),    # 3. Protocol - a string with the value "HTTP/1.1"
     Delimiter('\r\n\r\n', name='eom'),      # 4. The double "new lines" ("\r\n\r\n") at the end of the http request
+])
+"""
+http_get_request_template_1 = Template(name='HTTP_GET_REQUEST_V1', fields=[
+    String('GET', name='method', fuzzable= False),               
+    Delimiter(' ', name='space1', fuzzable= False),              
+    String('/index.html', name='path'),         
+    Delimiter(' ', name='space2'),             
+    String('HTTP', name='protocol name'),      
+    Delimiter('/', name='fws1'),               
+    Dword(1, name='major version', encoder=ENC_INT_DEC),
+    Delimiter('.', name='dot1'),               
+    Dword(1, name='minor version', encoder=ENC_INT_DEC),
+    Delimiter('\r\n\r\n', name='eom'),
+ 
+])
+
+http_get_request_template_2 = Template(name='HTTP_GET_REQUEST_V2', fields=[
+    String('GET', name='method', fuzzable= False),               
+    Delimiter(' ', name='space1', fuzzable= False),              
+    String('/index.html', name='path'),         
+    Delimiter(' ', name='space2'),             
+    String('HTTP', name='protocol name'),      
+    Delimiter('/', name='fws1'),               
+    Dword(1, name='major version', encoder=ENC_INT_DEC),
+    Delimiter('.', name='dot1'),               
+    Dword(1, name='minor version', encoder=ENC_INT_DEC),
+    Delimiter('\r\n', name='newLine1'),
+    String('Host:', name='host field'),
+    Delimiter(' ', name='space3', fuzzable= False),  
+    String('www.google.com', name='hostURL'),
+    Delimiter('\r\n', name='newLine2'),
+    String('User-Agent:', name='user-agent field'),
+    Delimiter(' ', name='space4', fuzzable= False),  
+    String('Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.0.2) Gecko/20030208 Netscape/7.02', name='browser type'),
+    Delimiter('\r\n', name='newLine3'),
+    String('Accept:', name='accept field'),
+    Delimiter(' ', name='space5', fuzzable= False),  
+    String('text/xml,text/html;q=0.9,text/plain;q=0.8', name='accept values'),
+    Delimiter('\r\n', name='newLine4'),
+    String('Accept-language:', name='Accept-language field'),
+    Delimiter(' ', name='space6', fuzzable= False),  
+    String('en-us, en;q=0.50', name='Accept-language values'),
+    Delimiter('\r\n', name='newLine5'),
+    String('Keep-Alive:', name='Keep-Alive field'),
+    Delimiter(' ', name='space7', fuzzable= False),  
+    Dword(300, name='timeToLive', encoder=ENC_INT_DEC),
+    Delimiter('\r\n', name='newLine6'),
+    String('Connection:', name='Connection field'),
+    Delimiter(' ', name='space8', fuzzable= False),  
+    String('Keep-Alive', name='Connection state'),
+    Delimiter('\r\n', name='newLine7'),
+    String('Content-length:', name='Content-length field'),
+    Delimiter(' ', name='space9', fuzzable= False),  
+    Dword(163411, name='content-size', encoder=ENC_INT_DEC),
+    Delimiter('\r\n\r\n', name='eom', fuzzable= False),
+ 
 ])
 
 ################# Target #################
@@ -105,8 +161,8 @@ class MyController(BaseController):
         self.logger.debug('return code: %d', self._process.returncode)
         self.report.add('return_code', self._process.returncode)
         ## if the process crashed, we will have a different return code
-        self.report.add('failed', self._process.returncode != 0)
-        self._process = None
+        ##self.report.add('failed', self._process.returncode != 0)
+        ##self._process = None
         ## call the super
         super(MyController, self).post_test()
 
@@ -144,9 +200,9 @@ class MyController(BaseController):
 # Define target and controller
 target = TcpTarget(name='example_target', host='localhost', port=8088)
 controller = MyController(name='ServerController',
-        main_process_path="/usr/local/lsws/bin/openlitespeed",
-        server_start_cmd=["/usr/local/lsws/bin/lswsctrl","start"],
-        server_stop_cmd=["/usr/local/lsws/bin/lswsctrl","stop"],
+        main_process_path="/usr/local/apache/bin/apachectl",
+        server_start_cmd=["/usr/local/apache/bin/apachectl","start"],
+        server_stop_cmd=["/usr/local/apache/bin/apachectl","stop"],
         process_args=[],
         process_env=None,
         logger=None)
@@ -154,7 +210,10 @@ target.set_controller(controller)
 
 # Define model
 model = GraphModel()
-model.connect(http_get_request_template)
+
+#model.connect(http_get_request_template)
+#model.connect(http_get_request_template_1)
+model.connect(http_get_request_template_2)
 
 # Define fuzzer
 fuzzer = ServerFuzzer()
