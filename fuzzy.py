@@ -60,33 +60,57 @@ http_get_request_template_2 = Template(name='HTTP_GET_REQUEST_V2', fields=[
     Delimiter('.', name='dot1'),               
     Dword(1, name='minor version', encoder=ENC_INT_DEC),
     Delimiter('\r\n', name='newLine1'),
+    # host
     String('Host:', name='host field'),
     Delimiter(' ', name='space3', fuzzable= False),  
     String('www.google.com', name='hostURL'),
     Delimiter('\r\n', name='newLine2'),
+    # user agent
     String('User-Agent:', name='user-agent field'),
     Delimiter(' ', name='space4', fuzzable= False),  
     String('Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.0.2) Gecko/20030208 Netscape/7.02', name='browser type'),
     Delimiter('\r\n', name='newLine3'),
+    # accept
     String('Accept:', name='accept field'),
     Delimiter(' ', name='space5', fuzzable= False),  
+    # accpet values
     String('text/xml,text/html;q=0.9,text/plain;q=0.8', name='accept values'),
     Delimiter('\r\n', name='newLine4'),
+    # accept language
     String('Accept-language:', name='Accept-language field'),
     Delimiter(' ', name='space6', fuzzable= False),  
     String('en-us, en;q=0.50', name='Accept-language values'),
     Delimiter('\r\n', name='newLine5'),
+    # keep alive
     String('Keep-Alive:', name='Keep-Alive field'),
     Delimiter(' ', name='space7', fuzzable= False),  
     Dword(300, name='timeToLive', encoder=ENC_INT_DEC),
     Delimiter('\r\n', name='newLine6'),
+    # connection
     String('Connection:', name='Connection field'),
     Delimiter(' ', name='space8', fuzzable= False),  
     String('Keep-Alive', name='Connection state'),
     Delimiter('\r\n', name='newLine7'),
-    String('Content-length:', name='Content-length field'),
-    Delimiter(' ', name='space9', fuzzable= False),  
-    Dword(163411, name='content-size', encoder=ENC_INT_DEC),
+    # if modified since
+    String('If-Modified-Since', name='If-Modified-Since field'),
+    Delimiter(' ', name='space9'),  
+    Group(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], name='Day of week'),
+    Delimiter(',', name='comma1'),  
+    Delimiter(' ', name='space10'),  
+    Dword(28, name='day', encoder=ENC_INT_DEC),
+    Delimiter(' ', name='space11'),
+    Group(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], name='month'),
+    Delimiter(' ', name='space12'),
+    Dword(2004, name='year', encoder=ENC_INT_DEC),
+    Delimiter(' ', name='space13'),
+    Dword(17, name='hour', encoder=ENC_INT_DEC),
+    Delimiter(' ', name='space14'),
+    Dword(18, name='min', encoder=ENC_INT_DEC),
+    Delimiter(' ', name='space15'),
+    Dword(53, name='sec', encoder=ENC_INT_DEC),
+    Delimiter(' ', name='space16'),
+    String('GMT', name='timezone'),
+    #end of message
     Delimiter('\r\n\r\n', name='eom', fuzzable= False),
  
 ])
