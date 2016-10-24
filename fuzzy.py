@@ -3,6 +3,7 @@ import socket
 import time
 import traceback
 import sys
+import threading
 from subprocess import *
 from kitty.targets.server import ServerTarget
 from kitty.model import *
@@ -11,7 +12,7 @@ from kitty.controllers.base import BaseController
 # from katnip.controllers.client.process import MyController
 from katnip.targets.tcp import TcpTarget
 from kitty.interfaces import WebInterface
-
+#from kitty.core.threading_utils import FuncThread
 
 ####################################
 # About this file
@@ -150,16 +151,14 @@ class MyController(BaseController):
     
 ################# Actual fuzzer runner code #################
 
-if len(sys.argv) <= 1:
-    print("Usage: template1 template2 templateN")
-else:
-
+def fuzz(template='http_get_request_template_1', target_host='localhost', target_port=8088, cont_main_process_path='/usr/local/apache/bin/apachectl', web_interface_host='0.0.0.0', web_interface_port=26000):
     # Define target and controller
-    target = TcpTarget(name='example_target', host='localhost', port=8088)
+    target = TcpTarget(name='example_target', host=target_host, port=
+target_port)
     controller = MyController(name='ServerController',
-            main_process_path="/usr/local/apache/bin/apachectl",
-            server_start_cmd=["/usr/local/apache/bin/apachectl","start"],
-            server_stop_cmd=["/usr/local/apache/bin/apachectl","stop"],
+            main_process_path=cont_main_process_path,
+            server_start_cmd=[cont_main_process_path,"start"],
+            server_stop_cmd=[cont_main_process_path,"stop"],
             process_args=[],
             process_env=None,
             logger=None)
@@ -174,18 +173,71 @@ else:
 
     # Define fuzzer
     fuzzer = ServerFuzzer()
-    fuzzer.set_interface(WebInterface(host='0.0.0.0', port=26000))
+    fuzzer.set_interface(WebInterface(host=web_interface_host, port=web_interface_port))
     fuzzer.set_model(model)
     fuzzer.set_target(target)
     #fuzzer.set_delay_between_tests(0.2)
-
-    for template in sys.argv[1:]:
-        t = open(template, 'r')
-        model.connect(t.read())
-        print('-------------- starting fuzzing -----------------')
-        print('-------------- ' + template + ' -----------------')
-        fuzzer.start()
-
+    
+    t = template.open()
+    model.connect(t.read())
+    print('-------------- starting fuzzing -----------------')
+    print('-------------- ' + template + ' -----------------')
+    print('------ Web interface port ' + web_interface_port + ' -------------- ')
+    fuzzer.start()
     print('-------------- done with fuzzing -----------------')
     raw_input('press enter to exit')
     fuzzer.stop()
+'''
+if len(sys.argv) <= 1:
+    print('Usage: template1 template2 templateN')
+else:
+    for t in sys.argv[1:]:
+        handle = t.open()
+        arguments = []
+        arguments.append(handle)
+        thread =  FuncThread(fuzz, )
+        thread.run()
+
+'''
+
+def usage():
+    print('This is a server based fuzzer. In order to begin fuzzing, specify the main process path using the -m or --main option, followed by at least one file containing a http request template as specified by kitty.')
+    print('Example usage: ./fuzzy.py -m \'/usr/local/apache/bin/apachectl\' http_get_request_template_1')
+    print('-h, --help for this message')
+    print('-m, --main for path to main process')
+
+if len(sys.argv) <= 1:
+    usage()
+    sys.exit(2)
+else:
+    try:
+        opts, args = getopt.getopt(sys.argv, 'hm:', ['help', 'main='])
+    except getopt.GetoptError:
+        usage()
+        sys.exit(2)
+    
+    if len(args) <= 0:
+        usage()
+        sys.exit(2)
+    
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage()
+            sys.exit()
+        elif opt in ('-m', '--main'):
+            main_process_path = arg
+
+    # we can change these based on options?
+    target_host = 'localhost'
+    start_target_port = 8088
+    web_interface_host = '0.0.0.0'
+    start_web_interface_port = 26000
+    
+    for t in args:
+        
+        fuzz_args = {'template':t, 'target_host': target_host, 'target_port':start_target_port, 'cont_main_process_path': main_process_path, 'web_interface_host':web_interface_host, 'web_interface_port':start_web_interface_port}
+        thread = threading.Thread(target=fuzz, kwargs = fuzz_args)
+        start_target_port += 1
+        start_web_interface_port += 1
+        thread.start()
+        
