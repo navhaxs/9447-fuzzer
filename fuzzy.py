@@ -153,8 +153,7 @@ class MyController(BaseController):
 
 def fuzz(template='http_get_request_template_1', target_host='localhost', target_port=8088, cont_main_process_path='/usr/local/apache/bin/apachectl', web_interface_host='0.0.0.0', web_interface_port=26000):
     # Define target and controller
-    target = TcpTarget(name='example_target', host=target_host, port=
-target_port)
+    target = TcpTarget(name='example_target', host=target_host, port=target_port)
     controller = MyController(name='ServerController',
             main_process_path=cont_main_process_path,
             server_start_cmd=[cont_main_process_path,"start"],
@@ -178,7 +177,7 @@ target_port)
     fuzzer.set_target(target)
     #fuzzer.set_delay_between_tests(0.2)
     
-    t = template.open()
+    t = open(template, 'r')
     model.connect(t.read())
     print('-------------- starting fuzzing -----------------')
     print('-------------- ' + template + ' -----------------')
@@ -187,24 +186,16 @@ target_port)
     print('-------------- done with fuzzing -----------------')
     raw_input('press enter to exit')
     fuzzer.stop()
-'''
-if len(sys.argv) <= 1:
-    print('Usage: template1 template2 templateN')
-else:
-    for t in sys.argv[1:]:
-        handle = t.open()
-        arguments = []
-        arguments.append(handle)
-        thread =  FuncThread(fuzz, )
-        thread.run()
 
-'''
 
 def usage():
     print('This is a server based fuzzer. In order to begin fuzzing, specify the main process path using the -m or --main option, followed by at least one file containing a http request template as specified by kitty.')
     print('Example usage: ./fuzzy.py -m \'/usr/local/apache/bin/apachectl\' http_get_request_template_1')
     print('-h, --help for this message')
     print('-m, --main for path to main process')
+
+
+### main here ###
 
 if len(sys.argv) <= 1:
     usage()
