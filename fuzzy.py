@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import socket
 import time
 import traceback
@@ -14,7 +15,7 @@ from kitty.controllers.base import BaseController
 # from katnip.controllers.client.process import MyController
 from katnip.targets.tcp import TcpTarget
 from kitty.interfaces import WebInterface
-#from kitty.core.threading_utils import FuncThread
+
 
 ####################################
 # About this file
@@ -44,8 +45,6 @@ Template(name='HTTP_GET_TEMPLATE', fields=[
     Delimiter('\r\n\r\n', name='eom'),      # 4. The double "new lines" ("\r\n\r\n") at the end of the http request
 ])
 """
-
-
 
 ################# Target #################
 
@@ -177,9 +176,6 @@ def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target
     http_template = eval(t.read())
     t.close()
     model.connect(http_template)
-    #model.connect(http_get_request_template)
-    #model.connect(http_get_request_template_1)
-    #model.connect(http_get_request_template_2)
 
     # Define fuzzer
     fuzzer = ServerFuzzer()
@@ -195,13 +191,6 @@ def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target
     print('-------------- done with fuzzing -----------------')
     raw_input('press enter to exit')
     fuzzer.stop()
-
-
-def usage():
-    print('This is a server based fuzzer. In order to begin fuzzing, specify the main process path using the -m or --main option, followed by at least one file containing a http request template as specified by kitty.')
-    print('Example usage: ./fuzzy.py -m \'/usr/local/apache/bin/apachectl\' http_get_request_template_1')
-    print('-h, --help for this message')
-    print('-m, --main for path to main process')
 
 
 ### main here ###
@@ -242,8 +231,6 @@ host = '127.0.0.1'
 
 web_inter_host = '0.0.0.0'
 start_web_interface_port = 26000
-
-
 
 
 for t in args.template:
