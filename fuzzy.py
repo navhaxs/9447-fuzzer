@@ -153,16 +153,18 @@ class MyController(BaseController):
     
 ################# Actual fuzzer runner code #################
 
-def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target_port=25000, cont_main_process_path='/usr/local/apache/bin/apachectl', web_interface_host='0.0.0.0', web_interface_port=26000):
+global main_process
+global start_cmd
+global stop_cmd
 
-    print target_host, target_port
+def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target_port=25000,  web_interface_host='0.0.0.0', web_interface_port=26000):
 
     # Define target and controller
     target = TcpTarget(name='example_target', host=target_host, port=target_port)
     controller = MyController(name='ServerController',
-            main_process_path=cont_main_process_path,
-            server_start_cmd=[cont_main_process_path,"start"],
-            server_stop_cmd=[cont_main_process_path,"stop"],
+            main_process_path=main_process,
+            server_start_cmd=[main_process, start_cmd],
+            server_stop_cmd=[main_process,stop_cmd],
             process_args=[],
             process_env=None,
             logger=None)
@@ -203,66 +205,48 @@ def usage():
 
 
 ### main here ###
-'''
-if len(sys.argv) <= 1:
-    usage()
-    sys.exit(2)
-else:
-    
-    try:
-        opts, args = getopt.getopt(sys.argv, 'hm:', ['help', 'main='])
-    except getopt.GetoptError:
-        usage()
-        sys.exit(2)
-    
-    if len(args) <= 0:
-        usage()
-        sys.exit(2)
-    
-    for opt, arg in opts:
-        if opt in ('-h', '--help'):
-            usage()
-            sys.exit()
-        elif opt in ('-m', '--main'):
-            main_process_path = arg
-    '''
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-m', '--main', help='path to main process')
-parser.add_argument('template', nargs='+', help='file containing a http request template as specified by kitty')
+parser.add_argument('-s', '--start', help='start command for main process')
+parser.add_argument('-t', '--stop', help='stop command for main process')
 parser.add_argument('-p', '--port', type=int, help='server port')
+parser.add_argument('template', nargs='+', help='file containing a http request template as specified by kitty')
 args = parser.parse_args()
+
+exit = False
 
 if args.main == None:
     print 'Error: Main process path not specified'
-    sys.exit(2)
-elif args.port == None:
+    exit = True
+if args.port == None:
     print 'Error: Server port not specified'
+    exit = True
+if args.start == None:
+    print 'Error: Main process start command not specified'
+    exit = True
+if args.stop == None:
+    print 'Error: Main process stop command not specified'
+    exit = True
+
+if exit:
     sys.exit(2)
 
 
-main_process_path = args.main
-# we can change these based on options?
-host = '127.0.0.1'
+main_process = args.main
+start_cmd = args.start
+stop_cmd = args.stop
 start_target_port = args.port
+
+host = '127.0.0.1'
+
 web_inter_host = '0.0.0.0'
 start_web_interface_port = 26000
 
-#print main_process_path
-'''
-for t in args.template:
-    
-    fuzz_args = {'template':t, 'target_host': target_host, 'target_port':start_target_port, 'cont_main_process_path': main_process_path, 'web_interface_host':web_interface_host, 'web_interface_port':start_web_interface_port}
-    thread = threading.Thread(target=fuzz, kwargs = fuzz_args)
-    start_target_port += 1
-    start_web_interface_port += 1
-    thread.start()
-    
 
-    #print t
-'''
+
 
 for t in args.template:
-    fuzz(template = t, target_host = host, target_port = start_target_port, cont_main_process_path = main_process_path, web_interface_host = web_inter_host, web_interface_port = start_web_interface_port)
+    fuzz(template = t, target_host = host, target_port = start_target_port, web_interface_host = web_inter_host, web_interface_port = start_web_interface_port)
     start_target_port += 1
     start_web_interface_port += 1
