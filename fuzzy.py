@@ -154,6 +154,9 @@ class MyController(BaseController):
 ################# Actual fuzzer runner code #################
 
 def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target_port=25000, cont_main_process_path='/usr/local/apache/bin/apachectl', web_interface_host='0.0.0.0', web_interface_port=26000):
+
+    print target_host, target_port
+
     # Define target and controller
     target = TcpTarget(name='example_target', host=target_host, port=target_port)
     controller = MyController(name='ServerController',
@@ -180,7 +183,7 @@ def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target
     fuzzer.set_interface(WebInterface(host=web_interface_host, port=web_interface_port))
     fuzzer.set_model(model)
     fuzzer.set_target(target)
-    fuzzer.set_delay_between_tests(0.2)
+    fuzzer.set_delay_between_tests(0.4)
     
 
     print('-------------- starting fuzzing -----------------')
@@ -240,9 +243,9 @@ elif args.port == None:
 
 main_process_path = args.main
 # we can change these based on options?
-target_host = '127.0.0.1'
+host = '127.0.0.1'
 start_target_port = args.port
-web_interface_host = '0.0.0.0'
+web_inter_host = '0.0.0.0'
 start_web_interface_port = 26000
 
 #print main_process_path
@@ -260,6 +263,6 @@ for t in args.template:
 '''
 
 for t in args.template:
-    fuzz(template = t, target_host = target_host, target_port = start_target_port, cont_main_process_path = main_process_path, web_interface_host = web_interface_host, web_interface_port = start_web_interface_port)
+    fuzz(template = t, target_host = host, target_port = start_target_port, cont_main_process_path = main_process_path, web_interface_host = web_inter_host, web_interface_port = start_web_interface_port)
     start_target_port += 1
     start_web_interface_port += 1
