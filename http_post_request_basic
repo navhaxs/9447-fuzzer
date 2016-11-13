@@ -1,5 +1,5 @@
-Template(name='HTTP_GET_REQUEST_V2', fields=[
-    Group(['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'TRACE', 'CONNECT'], name='method'),             
+Template(name='HTTP_POST_REQUEST_BASIC', fields=[
+    Group(['POST', 'HEAD', 'GET', 'PUT', 'DELETE', 'TRACE', 'CONNECT'], name='method'),
     Delimiter(' ', name='space1', fuzzable= False),              
     String('/index.html', name='path'),         
     Delimiter(' ', name='space2'),             
@@ -40,25 +40,15 @@ Template(name='HTTP_GET_REQUEST_V2', fields=[
     Delimiter(' ', name='space8', fuzzable= False),  
     String('Keep-Alive', name='Connection state'),
     Delimiter('\r\n', name='newLine7'),
-    # if modified since
-    String('If-Modified-Since', name='If-Modified-Since field'),
+    # Referer
+    String('Referer:', name='Referer field'),
     Delimiter(' ', name='space9'),  
-    Group(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], name='Day of week'),
-    Delimiter(',', name='comma1'),  
+    String('http://localhost/test.php', name='referer value'),
+    Delimiter('\r\n', name='newLine8'),
+    # Content-Length
+    String('Content-Length:', name='Content-Length field'),
     Delimiter(' ', name='space10'),  
-    Dword(28, name='day', encoder=ENC_INT_DEC),
-    Delimiter(' ', name='space11'),
-    Group(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], name='month'),
-    Delimiter(' ', name='space12'),
-    Dword(2004, name='year', encoder=ENC_INT_DEC),
-    Delimiter(' ', name='space13'),
-    Dword(17, name='hour', encoder=ENC_INT_DEC),
-    Delimiter(' ', name='space14'),
-    Dword(18, name='min', encoder=ENC_INT_DEC),
-    Delimiter(' ', name='space15'),
-    Dword(53, name='sec', encoder=ENC_INT_DEC),
-    Delimiter(' ', name='space16'),
-    String('GMT', name='timezone'),
+    SInt32(32, name='Content-Length value', encoder=ENC_INT_DEC),
     #end of message
     Delimiter('\r\n\r\n', name='eom', fuzzable= False),
  
