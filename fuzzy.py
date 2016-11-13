@@ -175,6 +175,7 @@ def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target
     model = GraphModel()
     t = open(template, 'r')
     http_template = eval(t.read())
+    t.close()
     model.connect(http_template)
     #model.connect(http_get_request_template)
     #model.connect(http_get_request_template_1)
@@ -186,7 +187,6 @@ def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target
     fuzzer.set_model(model)
     fuzzer.set_target(target)
     fuzzer.set_delay_between_tests(0.4)
-    
 
     print('-------------- starting fuzzing -----------------')
     print('-------------- ' + template + ' -----------------')
