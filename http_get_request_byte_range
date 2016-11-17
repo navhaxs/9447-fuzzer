@@ -1,0 +1,47 @@
+Template(name='HTTP_GET_REQUEST_BYTE_RANGE', fields=[
+    String('GET', name='Method', fuzzable= False),            
+    Delimiter(' ', name='space1', fuzzable= False),              
+    String('/BigBuckBunny_320x180.mp4', name='path'), 
+    Delimiter('\r\n', name='newLine1', fuzzable= False),
+    # host
+    String('Host:', name='host field', fuzzable= False),
+    Delimiter(' ', name='space3', fuzzable= False),  
+    String('www.google.com', name='hostURL', fuzzable= False),
+    Delimiter('\r\n', name='newLine2', fuzzable= False),
+    # user agent
+    String('User-Agent:', name='user-agent field', fuzzable= False),
+    Delimiter(' ', name='space4', fuzzable= False),  
+    String('Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.0.2) Gecko/20030208 Netscape/7.02', name='browser type', fuzzable= False),
+    Delimiter('\r\n', name='newLine3', fuzzable= False),
+    # accept
+    String('Accept:', name='accept field', fuzzable= False),
+    Delimiter(' ', name='space5', fuzzable= False),  
+    # accpet values
+    String('*/*', name='accept values'),
+    Delimiter('\r\n', name='newLine4', fuzzable= False),
+    # accept language
+    String('Accept-language:', name='Accept-language field', fuzzable= False),
+    Delimiter(' ', name='space6', fuzzable= False),  
+    String('en-us, en;q=0.50', name='Accept-language values', fuzzable= False),
+    Delimiter('\r\n', name='newLine5', fuzzable= False),
+    # keep alive
+    String('Keep-Alive:', name='Keep-Alive field', fuzzable= False),
+    Delimiter(' ', name='space7', fuzzable= False),  
+    Dword(300, name='timeToLive', encoder=ENC_INT_DEC, fuzzable= False),
+    Delimiter('\r\n', name='newLine6', fuzzable= False),
+    # connection
+    String('Connection:', name='Connection field', fuzzable= False),
+    Delimiter(' ', name='space8', fuzzable= False),  
+    String('Keep-Alive', name='Connection state', fuzzable= False),
+    Delimiter('\r\n', name='newLine7', fuzzable= False),
+    # Range
+    String('Range:', name='Range field', fuzzable= False),
+    Delimiter(' ', name='space9', fuzzable= False),  
+    String('byte=', name='Range type'),
+    Dword(64312833, name='byte start', encoder=ENC_INT_DEC),
+    Delimiter('-', name='hiphen', fuzzable= False),
+    Dword(64657026, name='byte end', encoder=ENC_INT_DEC),
+    #end of message
+    Delimiter('\r\n\r\n', name='eom', fuzzable= False),
+ 
+])

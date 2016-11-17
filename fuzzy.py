@@ -1,7 +1,12 @@
 #!/usr/bin/env python
+
 import socket
 import time
 import traceback
+import sys
+import threading
+import getopt
+import argparse
 from subprocess import *
 from kitty.targets.server import ServerTarget
 from kitty.model import *
@@ -23,10 +28,15 @@ from kitty.interfaces import WebInterface
 #
 # Lastly is the actual fuzzer runner code.
 #
+# Usage: specify files containing templates as arguments
 
 ################# Data Models #################
+
+# Data models given in files specified in arguments
+# Data models should be in the specified format, no checking of sanity of templates is done :)
+
 """
-http_get_request_template = Template(name='HTTP_GET_TEMPLATE', fields=[
+Template(name='HTTP_GET_TEMPLATE', fields=[
     String('GET', name='method'),           # 1. Method - a string with the value "GET"
     Delimiter(' ', name='space1'),          # 1.a The space between Method and Path
     String('/index.html', name='path'),     # 2. Path - a string with the value "/index.html"
@@ -34,86 +44,10 @@ http_get_request_template = Template(name='HTTP_GET_TEMPLATE', fields=[
     String('HTTP/1.1', name='protocol'),    # 3. Protocol - a string with the value "HTTP/1.1"
     Delimiter('\r\n\r\n', name='eom'),      # 4. The double "new lines" ("\r\n\r\n") at the end of the http request
 ])
-"""
-http_get_request_template_1 = Template(name='HTTP_GET_REQUEST_V1', fields=[
-    String('GET', name='method', fuzzable= False),               
-    Delimiter(' ', name='space1', fuzzable= False),              
-    String('/index.html', name='path'),         
-    Delimiter(' ', name='space2'),             
-    String('HTTP', name='protocol name'),      
-    Delimiter('/', name='fws1'),               
-    Dword(1, name='major version', encoder=ENC_INT_DEC),
-    Delimiter('.', name='dot1'),               
-    Dword(1, name='minor version', encoder=ENC_INT_DEC),
-    Delimiter('\r\n\r\n', name='eom'),
- 
-])
 
-http_get_request_template_2 = Template(name='HTTP_GET_REQUEST_V2', fields=[
-    String('GET', name='method', fuzzable= False),               
-    Delimiter(' ', name='space1', fuzzable= False),              
-    String('/index.html', name='path'),         
-    Delimiter(' ', name='space2'),             
-    String('HTTP', name='protocol name'),      
-    Delimiter('/', name='fws1'),               
-    Dword(1, name='major version', encoder=ENC_INT_DEC),
-    Delimiter('.', name='dot1'),               
-    Dword(1, name='minor version', encoder=ENC_INT_DEC),
-    Delimiter('\r\n', name='newLine1'),
-    # host
-    String('Host:', name='host field'),
-    Delimiter(' ', name='space3', fuzzable= False),  
-    String('www.google.com', name='hostURL'),
-    Delimiter('\r\n', name='newLine2'),
-    # user agent
-    String('User-Agent:', name='user-agent field'),
-    Delimiter(' ', name='space4', fuzzable= False),  
-    String('Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.0.2) Gecko/20030208 Netscape/7.02', name='browser type'),
-    Delimiter('\r\n', name='newLine3'),
-    # accept
-    String('Accept:', name='accept field'),
-    Delimiter(' ', name='space5', fuzzable= False),  
-    # accpet values
-    String('text/xml,text/html;q=0.9,text/plain;q=0.8', name='accept values'),
-    Delimiter('\r\n', name='newLine4'),
-    # accept language
-    String('Accept-language:', name='Accept-language field'),
-    Delimiter(' ', name='space6', fuzzable= False),  
-    String('en-us, en;q=0.50', name='Accept-language values'),
-    Delimiter('\r\n', name='newLine5'),
-    # keep alive
-    String('Keep-Alive:', name='Keep-Alive field'),
-    Delimiter(' ', name='space7', fuzzable= False),  
-    Dword(300, name='timeToLive', encoder=ENC_INT_DEC),
-    Delimiter('\r\n', name='newLine6'),
-    # connection
-    String('Connection:', name='Connection field'),
-    Delimiter(' ', name='space8', fuzzable= False),  
-    String('Keep-Alive', name='Connection state'),
-    Delimiter('\r\n', name='newLine7'),
-    # if modified since
-    String('If-Modified-Since', name='If-Modified-Since field'),
-    Delimiter(' ', name='space9'),  
-    Group(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], name='Day of week'),
-    Delimiter(',', name='comma1'),  
-    Delimiter(' ', name='space10'),  
-    Dword(28, name='day', encoder=ENC_INT_DEC),
-    Delimiter(' ', name='space11'),
-    Group(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], name='month'),
-    Delimiter(' ', name='space12'),
-    Dword(2004, name='year', encoder=ENC_INT_DEC),
-    Delimiter(' ', name='space13'),
-    Dword(17, name='hour', encoder=ENC_INT_DEC),
-    Delimiter(' ', name='space14'),
-    Dword(18, name='min', encoder=ENC_INT_DEC),
-    Delimiter(' ', name='space15'),
-    Dword(53, name='sec', encoder=ENC_INT_DEC),
-    Delimiter(' ', name='space16'),
-    String('GMT', name='timezone'),
-    #end of message
-    Delimiter('\r\n\r\n', name='eom', fuzzable= False),
- 
-])
+
+#### TO RUN THE CODE: ./fuzzy.py -m /usr/local/apache/bin/apachectl -s start -t stop -p 8088 http_post_request_basic ####
+"""
 
 ################# Target #################
 
@@ -221,31 +155,88 @@ class MyController(BaseController):
     
 ################# Actual fuzzer runner code #################
 
-# Define target and controller
-target = TcpTarget(name='example_target', host='localhost', port=8088)
-controller = MyController(name='ServerController',
-        main_process_path="/usr/local/apache/bin/apachectl",
-        server_start_cmd=["/usr/local/apache/bin/apachectl","start"],
-        server_stop_cmd=["/usr/local/apache/bin/apachectl","stop"],
-        process_args=[],
-        process_env=None,
-        logger=None)
-target.set_controller(controller)
+global main_process
+global start_cmd
+global stop_cmd
 
-# Define model
-model = GraphModel()
+def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target_port=25000,  web_interface_host='0.0.0.0', web_interface_port=26000):
 
-#model.connect(http_get_request_template)
-#model.connect(http_get_request_template_1)
-model.connect(http_get_request_template_2)
+    # Define target and controller
+    target = TcpTarget(name='example_target', host=target_host, port=target_port)
+    controller = MyController(name='ServerController',
+            main_process_path=main_process,
+            server_start_cmd=[main_process, start_cmd],
+            server_stop_cmd=[main_process,stop_cmd],
+            process_args=[],
+            process_env=None,
+            logger=None)
+    target.set_controller(controller)
 
-# Define fuzzer
-fuzzer = ServerFuzzer()
-fuzzer.set_interface(WebInterface(host='0.0.0.0', port=26000))
-fuzzer.set_model(model)
-fuzzer.set_target(target)
-#fuzzer.set_delay_between_tests(0.2)
-fuzzer.start()
-print('-------------- done with fuzzing -----------------')
-raw_input('press enter to exit')
-fuzzer.stop()
+
+    # Define model
+    model = GraphModel()
+    t = open(template, 'r')
+    http_template = eval(t.read())
+    t.close()
+    model.connect(http_template)
+
+    # Define fuzzer
+    fuzzer = ServerFuzzer()
+    fuzzer.set_interface(WebInterface(host=web_interface_host, port=web_interface_port))
+    fuzzer.set_model(model)
+    fuzzer.set_target(target)
+    fuzzer.set_delay_between_tests(0.4)
+
+    print('-------------- starting fuzzing -----------------')
+    print('-------------- ' + template + ' -----------------')
+    print('------ Web interface port ' + str(web_interface_port) + ' -------------- ')
+    fuzzer.start()
+    print('-------------- done with fuzzing -----------------')
+    raw_input('press enter to exit')
+    fuzzer.stop()
+
+
+### main here ###
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-m', '--main', help='path to main process')
+parser.add_argument('-s', '--start', help='start command for main process')
+parser.add_argument('-t', '--stop', help='stop command for main process')
+parser.add_argument('-p', '--port', type=int, help='server port')
+parser.add_argument('template', nargs='+', help='file containing a http request template as specified by kitty')
+args = parser.parse_args()
+
+exit = False
+
+if args.main == None:
+    print 'Error: Main process path not specified'
+    exit = True
+if args.port == None:
+    print 'Error: Server port not specified'
+    exit = True
+if args.start == None:
+    print 'Error: Main process start command not specified'
+    exit = True
+if args.stop == None:
+    print 'Error: Main process stop command not specified'
+    exit = True
+
+if exit:
+    sys.exit(2)
+
+
+main_process = args.main
+start_cmd = args.start
+stop_cmd = args.stop
+start_target_port = args.port
+
+host = '127.0.0.1'
+
+web_inter_host = '0.0.0.0'
+start_web_interface_port = 26000
+
+
+for t in args.template:
+    fuzz(template = t, target_host = host, target_port = start_target_port, web_interface_host = web_inter_host, web_interface_port = start_web_interface_port)
+    start_target_port += 1
+    start_web_interface_port += 1
