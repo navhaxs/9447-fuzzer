@@ -11,15 +11,15 @@ from kitty.targets.server import ServerTarget
 from kitty.model import *
 from kitty.fuzzers import ServerFuzzer
 from kitty.controllers.base import BaseController
-# from katnip.controllers.client.process import MyController
 from katnip.targets.tcp import TcpTarget
 from kitty.interfaces import WebInterface
-#from kitty.core.threading_utils import FuncThread
 
 ####################################
-# About this file
+# Put-your-names-here
+#
+#
 ####################################
-# There are three broad parts to this kitty-based fuzzer:
+# There are three parts to this kitty-based fuzzer:
 #
 # 1) Data model
 # 2) Target
@@ -45,10 +45,11 @@ Template(name='HTTP_GET_TEMPLATE', fields=[
 ])
 
 
-#### TO RUN THE CODE: ./fuzzy.py -m /usr/local/apache/bin/apachectl -s start -t stop -p 8088 http_post_request_basic ####
+#### TO RUN THE CODE ####
+sudo ./fuzzy.py -m /usr/local/apache/bin/apachectl -s start -t stop -p 8080 -w 26001 http_post_request_basic
+sudo ./fuzzy.py -m /usr/local/lsws/bin/lswsctrl -s start -t stop -p 8088 -w 26005 http_get_request_byte_range
+
 """
-
-
 
 ################# Target #################
 
@@ -64,12 +65,14 @@ class MyController(BaseController):
     
     _server_start_cmd = ""
     _server_stop_cmd = ""
+    _target_port = 8080
 
     def __init__(self, name, main_process_path,
                 server_start_cmd,
                 server_stop_cmd,
                 process_args,
                 process_env,
+                target_port,
                 logger=None):
         '''
         :param name: name of the object
@@ -88,7 +91,8 @@ class MyController(BaseController):
         self._process = None
         self._process_env = process_env
         self._server_start_cmd = server_start_cmd
-        self._server_stop_cmd = server_stop_cmd 
+        self._server_stop_cmd = server_stop_cmd
+        self._target_port = target_port 
 
     def pre_test(self, test_number):
         ## call the super
@@ -96,29 +100,36 @@ class MyController(BaseController):
 
         '''start the victim'''
         ## stop the process if it still runs for some reason
-        if self._process:
-            self._stop_process()
+        if not self._process:
+            print("Cold starting the server.. (waiting 5 seconds)") # TODO: Currently assumes server is stopped.
+            ## start the process 
+            self._process = Popen(self._server_start_cmd, stdout=PIPE, stderr=PIPE)
+            time.sleep(5)
 
-        ## start the process
-        self._process = Popen(self._server_start_cmd, stdout=PIPE, stderr=PIPE)
-
-        ## add process information to the report
-        self.report.add('process_name', self._process_name)
-        self.report.add('process_path', self._process_path)
-        self.report.add('process_args', self._process_args)
-        self.report.add('process_id', self._process.pid)
+            ## add process information to the report
+            self.report.add('process_name', self._process_name)
+            self.report.add('process_path', self._process_path)
+            self.report.add('process_args', self._process_args)
+            self.report.add('process_id', self._process.pid)
 
 
     def post_test(self):
         '''Called when test is done'''
-        self._stop_process()
+        
+        # don't actually stop the server
+        # self._stop_process()
+
+        ## if the process crashed, we will have a different return code
+        if (self._is_victim_alive() != True):
+            self.report.failed("Cannot create TCP connection to target. Target not responding.")
+
         ## Make sure process started by us
-        assert(self._process)
+        #assert(self._process)
         ## add process information to the report
-        self.report.add('stdout', self._process.stdout.read())
-        self.report.add('stderr', self._process.stderr.read())
-        self.logger.debug('return code: %d', self._process.returncode)
-        self.report.add('return_code', self._process.returncode)
+        #self.report.add('stdout', self._process.stdout.read())
+        #self.report.add('stderr', self._process.stderr.read())
+        #self.logger.debug('return code: %d', self._process.returncode)
+        #self.report.add('return_code', self._process.returncode)
         ## if the process crashed, we will have a different return code
         ##self.report.add('failed', self._process.returncode != 0)
         ##self._process = None
@@ -152,7 +163,18 @@ class MyController(BaseController):
                         raise Exception('Failed to kill client process')
 
     def _is_victim_alive(self):
-        return self._process and (self._process.poll() is None)
+        self._active = False
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.settimeout(1)
+            s.connect(("localhost", self._target_port))
+            s.close()
+            self._active = True
+        except socket.error:
+            return self._active
+        return self._active
+    # def _is_victim_alive(self):
+    #     return self._process and (self._process.poll() is None)
     
 ################# Actual fuzzer runner code #################
 
@@ -170,6 +192,7 @@ def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target
             server_stop_cmd=[main_process,stop_cmd],
             process_args=[],
             process_env=None,
+            target_port=target_port,
             logger=None)
     target.set_controller(controller)
 
@@ -179,6 +202,9 @@ def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target
     t = open(template, 'r')
     http_template = eval(t.read())
     t.close()
+
+    http_template = t
+
     model.connect(http_template)
     #model.connect(http_get_request_template)
     #model.connect(http_get_request_template_1)
@@ -201,7 +227,7 @@ def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target
 
 
 def usage():
-    print('This is a server based fuzzer. In order to begin fuzzing, specify the main process path using the -m or --main option, followed by at least one file containing a http request template as specified by kitty.')
+    print('This is a server based fuzzer. Specify the main process path using the -m or --main option, followed by at least one file containing a http request template as specified by kitty.')
     print('Example usage: ./fuzzy.py -m \'/usr/local/apache/bin/apachectl\' http_get_request_template_1')
     print('-h, --help for this message')
     print('-m, --main for path to main process')
@@ -214,6 +240,7 @@ parser.add_argument('-m', '--main', help='path to main process')
 parser.add_argument('-s', '--start', help='start command for main process')
 parser.add_argument('-t', '--stop', help='stop command for main process')
 parser.add_argument('-p', '--port', type=int, help='server port')
+parser.add_argument('-w', '--webuiport', type=int, help='web interface port')
 parser.add_argument('template', nargs='+', help='file containing a http request template as specified by kitty')
 args = parser.parse_args()
 
@@ -224,6 +251,9 @@ if args.main == None:
     exit = True
 if args.port == None:
     print 'Error: Server port not specified'
+    exit = True
+if args.webuiport == None:
+    print 'Error: Web UI port not specified'
     exit = True
 if args.start == None:
     print 'Error: Main process start command not specified'
@@ -244,12 +274,12 @@ start_target_port = args.port
 host = '127.0.0.1'
 
 web_inter_host = '0.0.0.0'
-start_web_interface_port = 26000
+start_web_interface_port = args.webuiport # 26001
 
 
 
 
 for t in args.template:
     fuzz(template = t, target_host = host, target_port = start_target_port, web_interface_host = web_inter_host, web_interface_port = start_web_interface_port)
-    start_target_port += 1
+    #start_target_port += 1
     start_web_interface_port += 1
