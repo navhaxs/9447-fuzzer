@@ -43,6 +43,9 @@ Template(name='HTTP_GET_TEMPLATE', fields=[
     String('HTTP/1.1', name='protocol'),    # 3. Protocol - a string with the value "HTTP/1.1"
     Delimiter('\r\n\r\n', name='eom'),      # 4. The double "new lines" ("\r\n\r\n") at the end of the http request
 ])
+
+
+#### TO RUN THE CODE: ./fuzzy.py -m /usr/local/apache/bin/apachectl -s start -t stop -p 8088 http_post_request_basic ####
 """
 
 
