@@ -1,7 +1,8 @@
-Template(name='HTTP_POST_REQUEST_CONTENT_LENGTH', fields=[
-    String('POST', name='Method', fuzzable= False),
+
+Template(name='HTTP_TRACE_REQUEST_BASIC', fields=[
+    String('TRACE', name='Method', fuzzable= False),            
     Delimiter(' ', name='space1', fuzzable= False),              
-    String('/index.html', name='path', fuzzable= False),         
+    String('/', name='path', fuzzable= True), 
     Delimiter(' ', name='space2', fuzzable= False),             
     String('HTTP', name='protocol name', fuzzable= False),      
     Delimiter('/', name='fws1', fuzzable= False),               
@@ -9,12 +10,13 @@ Template(name='HTTP_POST_REQUEST_CONTENT_LENGTH', fields=[
     Delimiter('.', name='dot1', fuzzable= False),               
     Dword(1, name='minor version', encoder=ENC_INT_DEC, fuzzable= False),
     Delimiter('\r\n', name='newLine1', fuzzable= False),
+    
     # host
     String('Host:', name='host field', fuzzable= False),
     Delimiter(' ', name='space3', fuzzable= False),  
-    String('127.0.0.1:8088', name='hostURL', fuzzable= False),
+    String('127.0.0.1:8088', name='hostURL', fuzzable= True),
     Delimiter('\r\n', name='newLine2', fuzzable= False),
-    # user agent
+  # user agent
     String('User-Agent:', name='user-agent field', fuzzable= False),
     Delimiter(' ', name='space4', fuzzable= False),  
     String('Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.0.2) Gecko/20030208 Netscape/7.02', name='browser type', fuzzable= False),
@@ -29,27 +31,7 @@ Template(name='HTTP_POST_REQUEST_CONTENT_LENGTH', fields=[
     String('Accept-language:', name='Accept-language field', fuzzable= False),
     Delimiter(' ', name='space6', fuzzable= False),  
     String('en-us, en;q=0.50', name='Accept-language values', fuzzable= False),
-    Delimiter('\r\n', name='newLine5', fuzzable= False),
-    # keep alive
-    String('Keep-Alive:', name='Keep-Alive field', fuzzable= False),
-    Delimiter(' ', name='space7', fuzzable= False),  
-    Dword(300, name='timeToLive', encoder=ENC_INT_DEC, fuzzable= False),
-    Delimiter('\r\n', name='newLine6', fuzzable= False),
-    # connection
-    String('Connection:', name='Connection field', fuzzable= False),
-    Delimiter(' ', name='space8', fuzzable= False),  
-    String('Keep-Alive', name='Connection state', fuzzable= False),
-    Delimiter('\r\n', name='newLine7', fuzzable= False),
-    # Referer
-    String('Referer:', name='Referer field', fuzzable= False),
-    Delimiter(' ', name='space9', fuzzable= False),  
-    String('http://localhost/test.php', name='referer value', fuzzable= False),
-    Delimiter('\r\n', name='newLine8', fuzzable= False),
-    # Content-Length
-    String('Content-Length:', name='Content-Length field', fuzzable= False),
-    Delimiter(' ', name='space10', fuzzable= False),  
-    SInt32(32, name='Content-Length value', encoder=ENC_INT_DEC),
     #end of message
-    Delimiter('\r\n\r\n', name='eom', fuzzable= False),
+    Delimiter('\r\n\r\n', name='eom', fuzzable= True),
  
 ])

@@ -1,12 +1,12 @@
 Template(name='HTTP_GET_REQUEST_BYTE_RANGE', fields=[
     String('GET', name='Method', fuzzable= False),            
     Delimiter(' ', name='space1', fuzzable= False),              
-    String('/BigBuckBunny_320x180.mp4', name='path'), 
+    String('/apache_pb.gif', name='path'), 
     Delimiter('\r\n', name='newLine1', fuzzable= False),
     # host
     String('Host:', name='host field', fuzzable= False),
     Delimiter(' ', name='space3', fuzzable= False),  
-    String('www.google.com', name='hostURL', fuzzable= False),
+    String('127.0.0.1:8088', name='hostURL', fuzzable= False),
     Delimiter('\r\n', name='newLine2', fuzzable= False),
     # user agent
     String('User-Agent:', name='user-agent field', fuzzable= False),
@@ -17,7 +17,7 @@ Template(name='HTTP_GET_REQUEST_BYTE_RANGE', fields=[
     String('Accept:', name='accept field', fuzzable= False),
     Delimiter(' ', name='space5', fuzzable= False),  
     # accpet values
-    String('*/*', name='accept values'),
+    String('text/html, text/xml, */*', name='accept values'),
     Delimiter('\r\n', name='newLine4', fuzzable= False),
     # accept language
     String('Accept-language:', name='Accept-language field', fuzzable= False),
@@ -38,9 +38,9 @@ Template(name='HTTP_GET_REQUEST_BYTE_RANGE', fields=[
     String('Range:', name='Range field', fuzzable= False),
     Delimiter(' ', name='space9', fuzzable= False),  
     String('byte=', name='Range type'),
-    Dword(64312833, name='byte start', encoder=ENC_INT_DEC),
+    Dword(0, name='byte start', encoder=ENC_INT_DEC),
     Delimiter('-', name='hiphen', fuzzable= False),
-    Dword(64657026, name='byte end', encoder=ENC_INT_DEC),
+    Dword(15, name='byte end', encoder=ENC_INT_DEC),
     #end of message
     Delimiter('\r\n\r\n', name='eom', fuzzable= False),
  
