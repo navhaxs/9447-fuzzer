@@ -4,8 +4,8 @@ import socket
 import time
 import traceback
 import sys
+import os
 import threading
-import getopt
 import argparse
 from subprocess import *
 from kitty.targets.server import ServerTarget
@@ -15,6 +15,7 @@ from kitty.controllers.base import BaseController
 # from katnip.controllers.client.process import MyController
 from katnip.targets.tcp import TcpTarget
 from kitty.interfaces import WebInterface
+from katnip.monitors.network import NetworkMonitor
 
 
 ####################################
@@ -153,11 +154,18 @@ class MyController(BaseController):
     def _is_victim_alive(self):
         return self._process and (self._process.poll() is None)
     
+################ Monitor ####################################
+
+# Monitor is NetworkMonitor defined in katnip.monitors.network
+# Role of the monitor is to store pcaps which will be analysed separately
+
 ################# Actual fuzzer runner code #################
 
 global main_process
 global start_cmd
 global stop_cmd
+global network_interface
+global capture_packets
 
 def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target_port=25000,  web_interface_host='0.0.0.0', web_interface_port=26000):
 
@@ -172,7 +180,11 @@ def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target
             logger=None)
     target.set_controller(controller)
 
-
+    # Define network controller to generate pcap files only if option is set
+    if capture_packets:
+        monitor = NetworkMonitor(interface=network_interface, dir_path='./pcaps/', name='networkMonitor', logger=None)
+        target.add_monitor(monitor)
+    
     # Define model
     model = GraphModel()
     t = open(template, 'r')
@@ -192,7 +204,7 @@ def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target
     print('------ Web interface port ' + str(web_interface_port) + ' -------------- ')
     fuzzer.start()
     print('-------------- done with fuzzing -----------------')
-    raw_input('press enter to exit')
+    #raw_input('press enter to exit')
     fuzzer.stop()
 
 
@@ -203,6 +215,7 @@ parser.add_argument('-m', '--main', help='path to main process')
 parser.add_argument('-s', '--start', help='start command for main process')
 parser.add_argument('-t', '--stop', help='stop command for main process')
 parser.add_argument('-p', '--port', type=int, help='server port')
+parser.add_argument('-i', '--interface', help='name of netowrk interface to be monitored') 
 parser.add_argument('template', nargs='+', help='file containing a http request template as specified by kitty')
 args = parser.parse_args()
 
@@ -220,6 +233,9 @@ if args.start == None:
 if args.stop == None:
     print 'Error: Main process stop command not specified'
     exit = True
+if args.interface == None:
+    print 'Error: Network interface not specified'
+    exit = True
 
 if exit:
     sys.exit(2)
@@ -229,6 +245,20 @@ main_process = args.main
 start_cmd = args.start
 stop_cmd = args.stop
 start_target_port = args.port
+
+if args.interface != 'None' or args.interface != 'none':
+    capture_packets = True
+    network_interface = args.interface
+    if not os.path.isdir('./pcaps/'):
+        try:
+            subprocess.check_call(['mkdir', 'pcaps'])
+        except CalledProcessError:
+            print 'Error: pcaps directory does not exist and could not be created'
+            print 'Network interface monitor not started'
+            capture_packets = False
+else:
+    capture_packets = False
+    network_interface = None
 
 host = '127.0.0.1'
 
