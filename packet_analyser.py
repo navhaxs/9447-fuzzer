@@ -2,7 +2,7 @@
 
 import sys
 import os
-import threading
+from threading import Thread
 import Queue
 import pyshark
 
@@ -22,10 +22,10 @@ class Packet_analyser:
     def __init__(self, max_threads=4):
         self._queue = Queue.Queue()
         self._max_threads = max_threads
-        for i in range(_max_treads):
-            t = Thread(target = analyse_packet)
+        for i in range(self._max_threads):
+            t = Thread(target = self.analyse_packet)
             t.daemon = True
-            self._workers[i] = t
+            self._workers.append(t)
             t.start()
 
     def push_item(self, to_do ):
@@ -60,15 +60,16 @@ class Packet_analyser:
                     # print summary, test number, session number
                     report_name = './pcaps/' + str(session) + '/' + str(session) + '_report_' + str(test_number)
                     
-                        try:
-                            r = open(report_name, 'w')
-                            print r 'Session: ' + str(session)
-                            print r 'Test Number: ' + str(test_number)
-                            print r 'Error: ' + error
-                            print r 'Summary: '
-                            print r c
-                        except:
-                            print 'Could not open ' + report_name
+                    try:
+                        r = open(report_name, 'w')
+                        r.write('Session: ' + str(session) + '\n')
+                        r.write('Test Number: ' + str(test_number) + '\n')
+                        r.write('Error: ' + error + '\n')
+                        r.write('Summary: \n')
+                        r.write(str(c))
+                        r.close()
+                    except:
+                        print 'Could not open ' + report_name
 
             self._queue.task_done()
 

@@ -7,7 +7,7 @@ import sys
 import os
 import threading
 import argparse
-import packet_analyser
+from packet_analyser import Packet_analyser
 import datetime
 from subprocess import *
 from kitty.targets.server import ServerTarget
@@ -199,7 +199,7 @@ def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target
             logger=None)
     target.set_controller(controller)
 
-    session = str(datetime.now());
+    session = str(datetime.now())
 
     # Define network controller to generate pcap files only if option is set
     if capture_packets:
