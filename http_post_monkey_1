@@ -1,0 +1,33 @@
+Template(name='HTTP_POST_MONKEY_1', fields=[
+    String('POST', name='Method', fuzzable= True),
+    Delimiter(' ', name='space1', fuzzable= True),              
+    String('/', name='path', fuzzable= True),         
+    Delimiter(' ', name='space2', fuzzable= True),             
+    String('HTTP', name='protocol name', fuzzable= True),      
+    Delimiter('/', name='fws1', fuzzable= False),               
+    Dword(1, name='major version', encoder=ENC_INT_DEC, fuzzable= True),
+    Delimiter('.', name='dot1', fuzzable= False),               
+    Dword(1, name='minor version', encoder=ENC_INT_DEC, fuzzable= True),
+    Delimiter('\r\n', name='newLine1', fuzzable= True),
+    # host
+    String('Host:', name='host field', fuzzable= True),
+    Delimiter(' ', name='space3', fuzzable= True),  
+    String('127.0.0.1', name='hostURL', fuzzable= True),
+    Delimiter(':', name='colon', fuzzable= True),  
+    Dword(8088, name='hostPort', encoder=ENC_INT_DEC, fuzzable= True),
+    Delimiter('\r\n', name='newLine2', fuzzable= True),
+    # Content-Type
+    String('Content-Type:', name='Content-Type field', fuzzable= False),
+    Delimiter(' ', name='space4', fuzzable= False),  
+    String('plain/text', name='Content-Type value', fuzzable= True),
+    Delimiter('\r\n', name='newLine3', fuzzable= True),
+    # Content-Length
+    String('Content-Length:', name='Content-Length field', fuzzable= True),
+    Delimiter(' ', name='space5', fuzzable= True),  
+    SInt32(32, name='Content-Length value', encoder=ENC_INT_DEC, fuzzable= True),
+    #end of message
+    Delimiter('\r\n\r\n', name='eom', fuzzable= True),
+    #CONTENT
+    String('home=Cosby&favorite+flavor=flies', name='Content', fuzzable= True),
+    
+])

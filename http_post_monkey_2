@@ -1,0 +1,57 @@
+Template(name='HTTP_POST_MONKEY_2', fields=[
+    String('POST', name='Method', fuzzable= True),
+    Delimiter(' ', name='space1', fuzzable= True),              
+    String('/', name='path', fuzzable= True),         
+    Delimiter(' ', name='space2', fuzzable= True),             
+    String('HTTP', name='protocol name', fuzzable= True),      
+    Delimiter('/', name='fws1', fuzzable= False),               
+    Dword(1, name='major version', encoder=ENC_INT_DEC, fuzzable= True),
+    Delimiter('.', name='dot1', fuzzable= False),               
+    Dword(1, name='minor version', encoder=ENC_INT_DEC, fuzzable= True),
+    Delimiter('\r\n', name='newLine1', fuzzable= True),
+    # host
+    String('Host:', name='host field', fuzzable= True),
+    Delimiter(' ', name='space3', fuzzable= True),  
+    String('127.0.0.1', name='hostURL', fuzzable= True),
+    Delimiter(':', name='colon', fuzzable= True),  
+    Dword(8088, name='hostPort', encoder=ENC_INT_DEC, fuzzable= True),
+    Delimiter('\r\n', name='newLine2', fuzzable= True),
+    # user agent
+    String('User-Agent:', name='user-agent field', fuzzable= True),
+    Delimiter(' ', name='space4', fuzzable= True),  
+    String('Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.0.2) Gecko/20030208 Netscape/7.02', name='browser type', fuzzable= True),
+    Delimiter('\r\n', name='newLine3', fuzzable= True),
+    # accept
+    String('Accept:', name='accept field', fuzzable= True),
+    Delimiter(' ', name='space5', fuzzable= True),  
+    # accpet values
+    String('text/xml,text/html;q=0.9,text/plain;q=0.8', name='accept values', fuzzable= True),
+    Delimiter('\r\n', name='newLine4', fuzzable= False),
+    # accept language
+    String('Accept-language:', name='Accept-language field', fuzzable= True),
+    Delimiter(' ', name='space6', fuzzable= True),  
+    String('en-us, en;q=0.50', name='Accept-language values', fuzzable= True),
+    Delimiter('\r\n', name='newLine5', fuzzable= True),
+    # keep alive
+    String('Keep-Alive:', name='Keep-Alive field', fuzzable= True),
+    Delimiter(' ', name='space7', fuzzable= False),  
+    Dword(300, name='timeToLive', encoder=ENC_INT_DEC, fuzzable= True),
+    Delimiter('\r\n', name='newLine6', fuzzable= True),
+    # connection
+    String('Connection:', name='Connection field', fuzzable= True),
+    Delimiter(' ', name='space8', fuzzable= True),  
+    String('Keep-Alive', name='Connection state', fuzzable= True),
+    Delimiter('\r\n', name='newLine7', fuzzable= True),
+    # Content-Type
+    String('Content-Type:', name='Content-Type field', fuzzable= True),
+    Delimiter(' ', name='space9', fuzzable= True),  
+    String('plain/text', name='Content-Type value'),
+    Delimiter('\r\n', name='newLine8', fuzzable= True),
+    # Content-Length
+    String('Content-Length:', name='Content-Length field', fuzzable= True),
+    Delimiter(' ', name='space10', fuzzable= True),  
+    SInt32(32, name='Content-Length value', encoder=ENC_INT_DEC),
+    #end of message
+    Delimiter('\r\n\r\n', name='eom', fuzzable= True),
+ 
+])
