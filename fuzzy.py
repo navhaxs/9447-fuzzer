@@ -7,7 +7,7 @@ import sys
 import os
 import threading
 import argparse
-from packet_analyser import Packet_analyser
+import packet_analyser
 import datetime
 from subprocess import *
 from kitty.targets.server import ServerTarget
@@ -162,14 +162,14 @@ class MyController(BaseController):
 # Role of the monitor is to store pcaps which will be analysed separately
 
 class MyMonitor(NetworkMonitor):
-    def __init__(self, interface, dir_path, session, name, logger=None):
+    def __init__(self, interface, dir_path, session, name, analyser, logger=None):
         '''
         :param interface: name of interface to listen to
         :param dir_path: path to store captured pcaps
         :param name: name of the monitor
         :param logger: logger for the monitor instance
         '''
-        super(NetworkMonitor, self).__init__(interface, dir_path + session + "/", name, logger)
+        super(NetworkMonitor, self).__init__(interface, dir_path + session + "/", name, logger=None)
         self._analyser = Packet_analyser()
         self._session = session
 
@@ -185,8 +185,9 @@ global start_cmd
 global stop_cmd
 global network_interface
 global capture_packets
+global analyser
 
-def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target_port=25000,  web_interface_host='0.0.0.0', web_interface_port=26000):
+def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target_port=8080,  web_interface_host='0.0.0.0', web_interface_port=26000):
 
     # Define target and controller
     target = TcpTarget(name='example_target', host=target_host, port=target_port)
@@ -204,7 +205,7 @@ def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target
 
     # Define network controller to generate pcap files only if option is set
     if capture_packets:
-        monitor = MyMonitor(interface=network_interface, dir_path='./pcaps/', session=session, name='myMonitor', logger=None)
+        monitor = MyMonitor(interface=network_interface, dir_path='./pcaps/', session=session, name='myMonitor', analyser=analyser, logger=None)
         target.add_monitor(monitor)
     
     # Define model
@@ -271,14 +272,14 @@ if exit:
 main_process = args.main
 start_cmd = args.start
 stop_cmd = args.stop
-start_target_port = args.port
+target_port = args.port
 
 if args.interface != 'None' or args.interface != 'none':
     capture_packets = True
     
     if not os.path.isdir('./pcaps/'):
         try:
-            subprocess.check_call(['mkdir', 'pcaps'])
+            check_call(['mkdir', 'pcaps'])
         except CalledProcessError:
             print 'Error: pcaps directory does not exist and could not be created'
             print 'Network interface monitor not started'
@@ -287,15 +288,16 @@ else:
     capture_packets = False
     network_interface = None
 
+if capture_packets:
+    analyser = packet_analyser.Packet_analyser(4)
+
 host = '127.0.0.1'
 
 web_inter_host = '0.0.0.0'
 start_web_interface_port = webuiport
-analyser = Packet_analyser(4)
 
 for t in args.template:
-    fuzz(template=t, target_host=host, target_port=start_target_port, web_interface_host=web_inter_host, web_interface_port=start_web_interface_port)
-    start_target_port += 1 # Does not actually work, since you have to configure the server itself to change its port.
+    fuzz(template=t, target_host=host, target_port=target_port, web_interface_host=web_inter_host, web_interface_port=start_web_interface_port)
     start_web_interface_port += 1
 
 analyser.exit()
