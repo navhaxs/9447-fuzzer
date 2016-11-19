@@ -7,7 +7,8 @@ import sys
 import os
 import threading
 import argparse
-from packet_analyser import Packet_analyser
+import packet_analyser
+import datetime
 from subprocess import *
 from kitty.targets.server import ServerTarget
 from kitty.model import *
@@ -160,6 +161,23 @@ class MyController(BaseController):
 # Monitor is NetworkMonitor defined in katnip.monitors.network
 # Role of the monitor is to store pcaps which will be analysed separately
 
+class MyMonitor(NetworkMonitor):
+    def __init__(self, interface, dir_path, session, name, logger=None):
+        '''
+        :param interface: name of interface to listen to
+        :param dir_path: path to store captured pcaps
+        :param name: name of the monitor
+        :param logger: logger for the monitor instance
+        '''
+        super(NetworkMonitor, self).__init__(interface, dir_path + session + "/", name, logger)
+        self._analyser = Packet_analyser()
+        self._session = session
+
+    def post_test(self):
+        super(NetworkMonitor, self).post_test()
+        self._analyser.push((session, self.test_number))
+
+
 ################# Actual fuzzer runner code #################
 
 global main_process
@@ -181,9 +199,11 @@ def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target
             logger=None)
     target.set_controller(controller)
 
+    session = str(datetime.now());
+
     # Define network controller to generate pcap files only if option is set
     if capture_packets:
-        monitor = NetworkMonitor(interface=network_interface, dir_path='./pcaps/', name='networkMonitor', logger=None)
+        monitor = MyMonitor(interface=network_interface, dir_path='./pcaps/', session=session, name='myMonitor', logger=None)
         target.add_monitor(monitor)
     
     # Define model
