@@ -7,6 +7,7 @@ import sys
 import os
 import threading
 import argparse
+from packet_analyser import Packet_analyser
 from subprocess import *
 from kitty.targets.server import ServerTarget
 from kitty.model import *
@@ -264,9 +265,11 @@ host = '127.0.0.1'
 
 web_inter_host = '0.0.0.0'
 start_web_interface_port = 26000
-
+analyser = Packet_analyser(4)
 
 for t in args.template:
     fuzz(template = t, target_host = host, target_port = start_target_port, web_interface_host = web_inter_host, web_interface_port = start_web_interface_port)
     start_target_port += 1
     start_web_interface_port += 1
+
+analyser.exit()
