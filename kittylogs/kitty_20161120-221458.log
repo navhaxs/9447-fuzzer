@@ -1,0 +1,76 @@
+[2016-11-20 22:14:59,457] [INFO] [base._load_session] -> No session loaded
+[2016-11-20 22:14:59,471] [INFO] [graph.hash] -> hash of template HTTP_GET_MONKEY_2 is -7009377807649187563
+[2016-11-20 22:14:59,473] [INFO] [graph.hash] -> hash of model is 1860891210470903011
+[2016-11-20 22:14:59,478] [INFO] [base._start_message] -> 
+                 --------------------------------------------------
+                 Starting fuzzing session
+                 Target: TcpTarget
+                 UI: WebInterface listening on 0.0.0.0:26000
+                 Log: ./kittylogs/kitty_20161120-221458.log
+
+                 Total possible mutation count: 1064
+                 Fuzzing the mutation range: 0 to 1063
+                 --------------------------------------------------
+                                 Happy hacking
+                 --------------------------------------------------
+            
+[2016-11-20 22:14:59,511] [INFO] [base.start] -> Performing environment test
+[2016-11-20 22:14:59,558] [INFO] [base._test_info] -> Current test: -1
+[2016-11-20 22:14:59,568] [INFO] [server.transmit] -> request(87): 474554202f696d67732f6d6f6e6b65795f6c6f676f2e706e6720485454502f312e310d0a486f73743a203132372e302e302e ...
+[2016-11-20 22:15:00,159] [INFO] [server._start] -> should keep running? True
+[2016-11-20 22:15:00,188] [INFO] [base._test_info] -> Current test: 0
+[2016-11-20 22:15:00,195] [INFO] [server.transmit] -> request(90): 474554474554202f696d67732f6d6f6e6b65795f6c6f676f2e706e6720485454502f312e310d0a486f73743a203132372e30 ...
+[2016-11-20 22:15:01,355] [INFO] [base._test_info] -> Current test: 1
+[2016-11-20 22:15:01,361] [INFO] [server.transmit] -> request(114): 474554474554474554474554474554474554474554474554474554474554202f696d67732f6d6f6e6b65795f6c6f676f2e70 ...
+[2016-11-20 22:15:02,524] [INFO] [base._test_info] -> Current test: 2
+[2016-11-20 22:15:02,532] [INFO] [server.transmit] -> request(384): 4745544745544745544745544745544745544745544745544745544745544745544745544745544745544745544745544745 ...
+[2016-11-20 22:15:03,670] [INFO] [base._test_info] -> Current test: 3
+[2016-11-20 22:15:03,674] [INFO] [server.transmit] -> request(88): 474554fe202f696d67732f6d6f6e6b65795f6c6f676f2e706e6720485454502f312e310d0a486f73743a203132372e302e30 ...
+[2016-11-20 22:15:04,827] [INFO] [base._test_info] -> Current test: 4
+[2016-11-20 22:15:04,829] [INFO] [server.transmit] -> request(88): 00474554202f696d67732f6d6f6e6b65795f6c6f676f2e706e6720485454502f312e310d0a486f73743a203132372e302e30 ...
+[2016-11-20 22:15:05,914] [INFO] [base._test_info] -> Current test: 5
+[2016-11-20 22:15:05,916] [INFO] [server.transmit] -> request(88): 47004554202f696d67732f6d6f6e6b65795f6c6f676f2e706e6720485454502f312e310d0a486f73743a203132372e302e30 ...
+[2016-11-20 22:15:07,012] [INFO] [base._test_info] -> Current test: 6
+[2016-11-20 22:15:07,013] [INFO] [server.transmit] -> request(88): 47455400202f696d67732f6d6f6e6b65795f6c6f676f2e706e6720485454502f312e310d0a486f73743a203132372e302e30 ...
+[2016-11-20 22:15:08,059] [INFO] [base._test_info] -> Current test: 7
+[2016-11-20 22:15:08,061] [INFO] [server.transmit] -> request(84): 202f696d67732f6d6f6e6b65795f6c6f676f2e706e6720485454502f312e310d0a486f73743a203132372e302e302e313a38 ...
+[2016-11-20 22:15:09,087] [INFO] [base._test_info] -> Current test: 8
+[2016-11-20 22:15:09,089] [INFO] [server.transmit] -> request(2132): 2573257325732573257325732573257325732573257325732573257325732573257325732573257325732573257325732573 ...
+[2016-11-20 22:15:10,094] [INFO] [base._test_info] -> Current test: 9
+[2016-11-20 22:15:10,111] [INFO] [server.transmit] -> request(340): 2573257325732573257325732573257325732573257325732573257325732573257325732573257325732573257325732573 ...
+[2016-11-20 22:15:11,236] [INFO] [base._test_info] -> Current test: 10
+[2016-11-20 22:15:11,238] [INFO] [server.transmit] -> request(116): 2573257325732573257325732573257325732573257325732573257325732573202f696d67732f6d6f6e6b65795f6c6f676f ...
+[2016-11-20 22:15:12,306] [INFO] [base._test_info] -> Current test: 11
+[2016-11-20 22:15:12,312] [INFO] [server.transmit] -> request(88): 25732573202f696d67732f6d6f6e6b65795f6c6f676f2e706e6720485454502f312e310d0a486f73743a203132372e302e30 ...
+[2016-11-20 22:15:13,366] [INFO] [base._test_info] -> Current test: 12
+[2016-11-20 22:15:13,412] [INFO] [server.transmit] -> request(3156): 2525732525732525732525732525732525732525732525732525732525732525732525732525732525732525732525732525 ...
+[2016-11-20 22:15:14,443] [INFO] [base._test_info] -> Current test: 13
+[2016-11-20 22:15:14,445] [INFO] [server.transmit] -> request(468): 2525732525732525732525732525732525732525732525732525732525732525732525732525732525732525732525732525 ...
+[2016-11-20 22:15:15,388] [ERROR] [server._start] -> Error occurred while fuzzing: AttributeError("'WebInterface' object has no attribute '_server'",)
+[2016-11-20 22:15:15,409] [ERROR] [server._start] -> Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/kitty/fuzzers/server.py", line 43, in _start
+    self._run_sequence(sequence)
+  File "/usr/local/lib/python2.7/dist-packages/kitty/fuzzers/server.py", line 75, in _run_sequence
+    return self._post_test()
+  File "/usr/local/lib/python2.7/dist-packages/kitty/fuzzers/base.py", line 356, in _post_test
+    time.sleep(self.config.delay_secs)
+  File "/usr/local/lib/python2.7/dist-packages/kitty/fuzzers/base.py", line 504, in _exit_now
+    self.stop()
+  File "/usr/local/lib/python2.7/dist-packages/kitty/fuzzers/base.py", line 440, in stop
+    self.user_interface.stop()
+  File "/usr/local/lib/python2.7/dist-packages/kitty/interfaces/base.py", line 101, in stop
+    self._stop()
+  File "/usr/local/lib/python2.7/dist-packages/kitty/interfaces/web.py", line 297, in _stop
+    self._server.shutdown()
+AttributeError: 'WebInterface' object has no attribute '_server'
+
+[2016-11-20 22:15:15,409] [INFO] [base._end_message] -> 
+                         --------------------------------------------------
+                         Finished fuzzing session
+                         Target: TcpTarget
+
+                         Tested 14 mutations
+                         Mutation range: 0 to 13
+                         Failure count: 0
+                         --------------------------------------------------
+            
