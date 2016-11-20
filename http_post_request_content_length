@@ -1,4 +1,4 @@
-Template(name='HTTP_POST_REQUEST_BASIC', fields=[
+Template(name='HTTP_POST_REQUEST_CONTENT_LENGTH', fields=[
     String('POST', name='Method', fuzzable= False),
     Delimiter(' ', name='space1', fuzzable= False),              
     String('/index.html', name='path', fuzzable= False),         
@@ -12,7 +12,7 @@ Template(name='HTTP_POST_REQUEST_BASIC', fields=[
     # host
     String('Host:', name='host field', fuzzable= False),
     Delimiter(' ', name='space3', fuzzable= False),  
-    String('www.google.com', name='hostURL', fuzzable= False),
+    String('127.0.0.1"8088', name='hostURL', fuzzable= False),
     Delimiter('\r\n', name='newLine2', fuzzable= False),
     # user agent
     String('User-Agent:', name='user-agent field', fuzzable= False),

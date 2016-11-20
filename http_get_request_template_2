@@ -12,7 +12,7 @@ Template(name='HTTP_GET_REQUEST_V2', fields=[
     # host
     String('Host:', name='host field'),
     Delimiter(' ', name='space3', fuzzable= False),  
-    String('www.google.com', name='hostURL'),
+    String('127.0.0.1:8088', name='hostURL'),
     Delimiter('\r\n', name='newLine2'),
     # user agent
     String('User-Agent:', name='user-agent field'),

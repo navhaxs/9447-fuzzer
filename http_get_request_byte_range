@@ -1,12 +1,12 @@
 Template(name='HTTP_GET_REQUEST_BYTE_RANGE', fields=[
     String('GET', name='Method', fuzzable= False),            
     Delimiter(' ', name='space1', fuzzable= False),              
-    String('/BigBuckBunny_320x180.mp4', name='path'), 
+    String('/imgs/monkey_icon.png', name='path'), 
     Delimiter('\r\n', name='newLine1', fuzzable= False),
     # host
     String('Host:', name='host field', fuzzable= False),
     Delimiter(' ', name='space3', fuzzable= False),  
-    String('www.google.com', name='hostURL', fuzzable= False),
+    String('127.0.0.1:8088', name='hostURL', fuzzable= False),
     Delimiter('\r\n', name='newLine2', fuzzable= False),
     # user agent
     String('User-Agent:', name='user-agent field', fuzzable= False),
