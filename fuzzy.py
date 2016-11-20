@@ -287,7 +287,7 @@ if args.stop == None:
 if args.webuiport == None:
     webuiport = 26000
 else:
-    webuiport = args.webuiport
+    webuiport = int(args.webuiport)
 if args.interface == None:
     network_interface = 'lo' # default to loopback
 else:
