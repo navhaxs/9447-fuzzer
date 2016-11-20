@@ -98,17 +98,19 @@ class MyController(BaseController):
 
         '''start the victim'''
         ## stop the process if it still runs for some reason
-        if self._process:
-            self._stop_process()
+        #if self._process:
+        #    self._stop_process()
 
-        ## start the process
-        self._process = Popen(self._server_start_cmd, stdout=PIPE, stderr=PIPE)
+        if not self._process:
+            ## start the process
+            self._process = Popen(self._server_start_cmd, stdout=PIPE, stderr=PIPE)
+            time.sleep(3)
 
-        ## add process information to the report
-        self.report.add('process_name', self._process_name)
-        self.report.add('process_path', self._process_path)
-        self.report.add('process_args', self._process_args)
-        self.report.add('process_id', self._process.pid)
+            ## add process information to the report
+            self.report.add('process_name', self._process_name)
+            self.report.add('process_path', self._process_path)
+            self.report.add('process_args', self._process_args)
+            self.report.add('process_id', self._process.pid)
 
 
     def post_test(self):
@@ -171,12 +173,10 @@ class MyMonitor(NetworkMonitor):
         '''
 
         path = './pcaps/' + session
-        if not os.path.isdir(path):
-            try:
-                check_call(['mkdir', path])
-            except CalledProcessError:
-                print 'Error: sessional pcaps directory does not exist and could not be created'
-
+        
+        if not os.path.exists(path):
+            os.makedirs(path)
+    
         NetworkMonitor.__init__(self, interface, path + "/", name, logger)
         self._analyser = analyser
         self._session = session
@@ -209,7 +209,7 @@ def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target
     target.set_controller(controller)
 
     # The session is the timestamp 
-    session = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+    session = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d_%H%M%S')
 
     # Define network controller to generate pcap files only if option is set
     if capture_packets:
@@ -292,14 +292,6 @@ target_port = args.port
 
 if args.interface != 'None' or args.interface != 'none':
     capture_packets = True
-    
-    if not os.path.isdir('./pcaps/'):
-        try:
-            check_call(['mkdir', 'pcaps'])
-        except CalledProcessError:
-            print 'Error: pcaps directory does not exist and could not be created'
-            print 'Network interface monitor not started'
-            capture_packets = False
 else:
     capture_packets = False
     network_interface = None
