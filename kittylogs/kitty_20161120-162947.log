@@ -1,0 +1,284 @@
+[2016-11-20 16:29:47,915] [INFO] [base._load_session] -> No session loaded
+[2016-11-20 16:29:47,935] [INFO] [graph.hash] -> hash of template HTTP_GET_MONKEY_1 is -5043506593668091100
+[2016-11-20 16:29:47,936] [INFO] [graph.hash] -> hash of model is -7523290697974137846
+[2016-11-20 16:29:47,944] [INFO] [base._start_message] -> 
+                 --------------------------------------------------
+                 Starting fuzzing session
+                 Target: TcpTarget
+                 UI: WebInterface listening on 0.0.0.0:26000
+                 Log: ./kittylogs/kitty_20161120-162947.log
+
+                 Total possible mutation count: 864
+                 Fuzzing the mutation range: 0 to 863
+                 --------------------------------------------------
+                                 Happy hacking
+                 --------------------------------------------------
+            
+[2016-11-20 16:29:47,944] [INFO] [base.start] -> Performing environment test
+[2016-11-20 16:29:47,964] [INFO] [base._test_info] -> Current test: -1
+[2016-11-20 16:29:47,965] [INFO] [server.transmit] -> request(50): 474554202f696e6465782e68746d6c20485454502f312e310d0a486f73743a203132372e302e302e313a383038380d0a0d0a ...
+[2016-11-20 16:29:48,479] [INFO] [server._start] -> should keep running? True
+[2016-11-20 16:29:48,496] [INFO] [base._test_info] -> Current test: 0
+[2016-11-20 16:29:48,507] [INFO] [server.transmit] -> request(53): 474554474554202f696e6465782e68746d6c20485454502f312e310d0a486f73743a203132372e302e302e313a383038380d ...
+[2016-11-20 16:29:49,448] [ERROR] [tcp.pre_test] -> Error: Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 57, in pre_test
+    sock.connect((self.host, self.port))
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 111] Connection refused
+
+[2016-11-20 16:29:49,452] [ERROR] [tcp.pre_test] -> Failed to connect to target server, retrying...
+[2016-11-20 16:29:50,455] [INFO] [base._test_info] -> Current test: 1
+[2016-11-20 16:29:50,457] [INFO] [server.transmit] -> request(77): 474554474554474554474554474554474554474554474554474554474554202f696e6465782e68746d6c20485454502f312e ...
+[2016-11-20 16:29:50,876] [INFO] [base._test_info] -> Current test: 2
+[2016-11-20 16:29:50,879] [INFO] [server.transmit] -> request(347): 4745544745544745544745544745544745544745544745544745544745544745544745544745544745544745544745544745 ...
+[2016-11-20 16:29:51,806] [ERROR] [tcp.pre_test] -> Error: Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 57, in pre_test
+    sock.connect((self.host, self.port))
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 111] Connection refused
+
+[2016-11-20 16:29:51,808] [ERROR] [tcp.pre_test] -> Failed to connect to target server, retrying...
+[2016-11-20 16:29:52,812] [INFO] [base._test_info] -> Current test: 3
+[2016-11-20 16:29:52,815] [INFO] [server.transmit] -> request(51): 474554fe202f696e6465782e68746d6c20485454502f312e310d0a486f73743a203132372e302e302e313a383038380d0a0d ...
+[2016-11-20 16:29:53,236] [INFO] [base._test_info] -> Current test: 4
+[2016-11-20 16:29:53,239] [INFO] [server.transmit] -> request(51): 00474554202f696e6465782e68746d6c20485454502f312e310d0a486f73743a203132372e302e302e313a383038380d0a0d ...
+[2016-11-20 16:29:54,181] [ERROR] [tcp.pre_test] -> Error: Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 57, in pre_test
+    sock.connect((self.host, self.port))
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 111] Connection refused
+
+[2016-11-20 16:29:54,183] [ERROR] [tcp.pre_test] -> Failed to connect to target server, retrying...
+[2016-11-20 16:29:55,187] [INFO] [base._test_info] -> Current test: 5
+[2016-11-20 16:29:55,189] [INFO] [server.transmit] -> request(51): 47004554202f696e6465782e68746d6c20485454502f312e310d0a486f73743a203132372e302e302e313a383038380d0a0d ...
+[2016-11-20 16:29:55,605] [INFO] [base._test_info] -> Current test: 6
+[2016-11-20 16:29:55,607] [INFO] [server.transmit] -> request(51): 47455400202f696e6465782e68746d6c20485454502f312e310d0a486f73743a203132372e302e302e313a383038380d0a0d ...
+[2016-11-20 16:29:56,536] [ERROR] [tcp.pre_test] -> Error: Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 57, in pre_test
+    sock.connect((self.host, self.port))
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 111] Connection refused
+
+[2016-11-20 16:29:56,538] [ERROR] [tcp.pre_test] -> Failed to connect to target server, retrying...
+[2016-11-20 16:29:57,543] [INFO] [base._test_info] -> Current test: 7
+[2016-11-20 16:29:57,544] [INFO] [server.transmit] -> request(47): 202f696e6465782e68746d6c20485454502f312e310d0a486f73743a203132372e302e302e313a383038380d0a0d0a
+[2016-11-20 16:29:57,963] [INFO] [base._test_info] -> Current test: 8
+[2016-11-20 16:29:57,966] [INFO] [server.transmit] -> request(2095): 2573257325732573257325732573257325732573257325732573257325732573257325732573257325732573257325732573 ...
+[2016-11-20 16:29:58,891] [ERROR] [tcp.pre_test] -> Error: Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 57, in pre_test
+    sock.connect((self.host, self.port))
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 111] Connection refused
+
+[2016-11-20 16:29:58,892] [ERROR] [tcp.pre_test] -> Failed to connect to target server, retrying...
+[2016-11-20 16:29:59,897] [INFO] [base._test_info] -> Current test: 9
+[2016-11-20 16:29:59,898] [INFO] [server.transmit] -> request(303): 2573257325732573257325732573257325732573257325732573257325732573257325732573257325732573257325732573 ...
+[2016-11-20 16:30:00,320] [INFO] [base._test_info] -> Current test: 10
+[2016-11-20 16:30:00,323] [INFO] [server.transmit] -> request(79): 2573257325732573257325732573257325732573257325732573257325732573202f696e6465782e68746d6c20485454502f ...
+[2016-11-20 16:30:01,252] [ERROR] [tcp.pre_test] -> Error: Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 57, in pre_test
+    sock.connect((self.host, self.port))
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 111] Connection refused
+
+[2016-11-20 16:30:01,253] [ERROR] [tcp.pre_test] -> Failed to connect to target server, retrying...
+[2016-11-20 16:30:02,257] [INFO] [base._test_info] -> Current test: 11
+[2016-11-20 16:30:02,258] [INFO] [server.transmit] -> request(51): 25732573202f696e6465782e68746d6c20485454502f312e310d0a486f73743a203132372e302e302e313a383038380d0a0d ...
+[2016-11-20 16:30:02,678] [INFO] [base._test_info] -> Current test: 12
+[2016-11-20 16:30:02,685] [INFO] [server.transmit] -> request(3119): 2525732525732525732525732525732525732525732525732525732525732525732525732525732525732525732525732525 ...
+[2016-11-20 16:30:03,112] [INFO] [base._test_info] -> Current test: 13
+[2016-11-20 16:30:03,116] [INFO] [server.transmit] -> request(431): 2525732525732525732525732525732525732525732525732525732525732525732525732525732525732525732525732525 ...
+[2016-11-20 16:30:04,055] [INFO] [base._test_info] -> Current test: 14
+[2016-11-20 16:30:04,057] [INFO] [server.transmit] -> request(95): 252573252573252573252573252573252573252573252573252573252573252573252573252573252573252573252573202f ...
+[2016-11-20 16:30:05,002] [ERROR] [tcp.pre_test] -> Error: Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 57, in pre_test
+    sock.connect((self.host, self.port))
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 111] Connection refused
+
+[2016-11-20 16:30:05,003] [ERROR] [tcp.pre_test] -> Failed to connect to target server, retrying...
+[2016-11-20 16:30:06,007] [INFO] [base._test_info] -> Current test: 15
+[2016-11-20 16:30:06,009] [INFO] [server.transmit] -> request(53): 252573252573202f696e6465782e68746d6c20485454502f312e310d0a486f73743a203132372e302e302e313a383038380d ...
+[2016-11-20 16:30:06,428] [INFO] [base._test_info] -> Current test: 16
+[2016-11-20 16:30:06,430] [INFO] [server.transmit] -> request(4143): 2225732222257322222573222225732222257322222573222225732222257322222573222225732222257322222573222225 ...
+[2016-11-20 16:30:07,370] [ERROR] [tcp.pre_test] -> Error: Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 57, in pre_test
+    sock.connect((self.host, self.port))
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 111] Connection refused
+
+[2016-11-20 16:30:07,371] [ERROR] [tcp.pre_test] -> Failed to connect to target server, retrying...
+[2016-11-20 16:30:08,377] [INFO] [base._test_info] -> Current test: 17
+[2016-11-20 16:30:08,378] [INFO] [server.transmit] -> request(559): 2225732222257322222573222225732222257322222573222225732222257322222573222225732222257322222573222225 ...
+[2016-11-20 16:30:08,796] [INFO] [base._test_info] -> Current test: 18
+[2016-11-20 16:30:08,798] [INFO] [server.transmit] -> request(111): 2225732222257322222573222225732222257322222573222225732222257322222573222225732222257322222573222225 ...
+[2016-11-20 16:30:09,730] [ERROR] [tcp.pre_test] -> Error: Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 57, in pre_test
+    sock.connect((self.host, self.port))
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 111] Connection refused
+
+[2016-11-20 16:30:09,731] [ERROR] [tcp.pre_test] -> Failed to connect to target server, retrying...
+[2016-11-20 16:30:10,735] [INFO] [base._test_info] -> Current test: 19
+[2016-11-20 16:30:10,737] [INFO] [server.transmit] -> request(55): 2225732222257322202f696e6465782e68746d6c20485454502f312e310d0a486f73743a203132372e302e302e313a383038 ...
+[2016-11-20 16:30:11,158] [INFO] [base._test_info] -> Current test: 20
+[2016-11-20 16:30:11,162] [INFO] [server.transmit] -> request(2095): 256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e ...
+[2016-11-20 16:30:12,093] [ERROR] [tcp.pre_test] -> Error: Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 57, in pre_test
+    sock.connect((self.host, self.port))
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 111] Connection refused
+
+[2016-11-20 16:30:12,096] [ERROR] [tcp.pre_test] -> Failed to connect to target server, retrying...
+[2016-11-20 16:30:13,101] [INFO] [base._test_info] -> Current test: 21
+[2016-11-20 16:30:13,104] [INFO] [server.transmit] -> request(303): 256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e ...
+[2016-11-20 16:30:13,524] [INFO] [base._test_info] -> Current test: 22
+[2016-11-20 16:30:13,530] [INFO] [server.transmit] -> request(79): 256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e256e202f696e6465782e68746d6c20485454502f ...
+[2016-11-20 16:30:14,462] [ERROR] [tcp.pre_test] -> Error: Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 57, in pre_test
+    sock.connect((self.host, self.port))
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 111] Connection refused
+
+[2016-11-20 16:30:14,463] [ERROR] [tcp.pre_test] -> Failed to connect to target server, retrying...
+[2016-11-20 16:30:15,467] [INFO] [base._test_info] -> Current test: 23
+[2016-11-20 16:30:15,469] [INFO] [server.transmit] -> request(51): 256e256e202f696e6465782e68746d6c20485454502f312e310d0a486f73743a203132372e302e302e313a383038380d0a0d ...
+[2016-11-20 16:30:15,887] [INFO] [base._test_info] -> Current test: 24
+[2016-11-20 16:30:15,889] [INFO] [server.transmit] -> request(3119): 25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e2525 ...
+[2016-11-20 16:30:16,814] [INFO] [base._test_info] -> Current test: 25
+[2016-11-20 16:30:16,818] [INFO] [server.transmit] -> request(431): 25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e2525 ...
+[2016-11-20 16:30:17,750] [ERROR] [tcp.pre_test] -> Error: Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 57, in pre_test
+    sock.connect((self.host, self.port))
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 111] Connection refused
+
+[2016-11-20 16:30:17,751] [ERROR] [tcp.pre_test] -> Failed to connect to target server, retrying...
+[2016-11-20 16:30:18,755] [INFO] [base._test_info] -> Current test: 26
+[2016-11-20 16:30:18,757] [INFO] [server.transmit] -> request(95): 25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e25256e202f ...
+[2016-11-20 16:30:19,174] [INFO] [base._test_info] -> Current test: 27
+[2016-11-20 16:30:19,177] [INFO] [server.transmit] -> request(53): 25256e25256e202f696e6465782e68746d6c20485454502f312e310d0a486f73743a203132372e302e302e313a383038380d ...
+[2016-11-20 16:30:20,107] [INFO] [base._test_info] -> Current test: 28
+[2016-11-20 16:30:20,112] [INFO] [server.transmit] -> request(4143): 22256e2222256e2222256e2222256e2222256e2222256e2222256e2222256e2222256e2222256e2222256e2222256e222225 ...
+[2016-11-20 16:30:21,055] [ERROR] [tcp.pre_test] -> Error: Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 57, in pre_test
+    sock.connect((self.host, self.port))
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 111] Connection refused
+
+[2016-11-20 16:30:21,059] [ERROR] [tcp.pre_test] -> Failed to connect to target server, retrying...
+[2016-11-20 16:30:22,063] [INFO] [base._test_info] -> Current test: 29
+[2016-11-20 16:30:22,066] [INFO] [server.transmit] -> request(559): 22256e2222256e2222256e2222256e2222256e2222256e2222256e2222256e2222256e2222256e2222256e2222256e222225 ...
+[2016-11-20 16:30:22,486] [INFO] [base._test_info] -> Current test: 30
+[2016-11-20 16:30:22,488] [INFO] [server.transmit] -> request(111): 22256e2222256e2222256e2222256e2222256e2222256e2222256e2222256e2222256e2222256e2222256e2222256e222225 ...
+[2016-11-20 16:30:23,423] [ERROR] [tcp.pre_test] -> Error: Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 57, in pre_test
+    sock.connect((self.host, self.port))
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 111] Connection refused
+
+[2016-11-20 16:30:23,425] [ERROR] [tcp.pre_test] -> Failed to connect to target server, retrying...
+[2016-11-20 16:30:24,429] [INFO] [base._test_info] -> Current test: 31
+[2016-11-20 16:30:24,431] [INFO] [server.transmit] -> request(55): 22256e2222256e22202f696e6465782e68746d6c20485454502f312e310d0a486f73743a203132372e302e302e313a383038 ...
+[2016-11-20 16:30:24,847] [INFO] [base._test_info] -> Current test: 32
+[2016-11-20 16:30:24,852] [INFO] [server.transmit] -> request(61): 252e31363730357525325c24686e202f696e6465782e68746d6c20485454502f312e310d0a486f73743a203132372e302e30 ...
+[2016-11-20 16:30:25,781] [ERROR] [tcp.pre_test] -> Error: Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 57, in pre_test
+    sock.connect((self.host, self.port))
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 111] Connection refused
+
+[2016-11-20 16:30:25,783] [ERROR] [tcp.pre_test] -> Failed to connect to target server, retrying...
+[2016-11-20 16:30:26,789] [INFO] [base._test_info] -> Current test: 33
+[2016-11-20 16:30:26,791] [INFO] [server.transmit] -> request(2095): 0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a ...
+[2016-11-20 16:30:27,211] [INFO] [base._test_info] -> Current test: 34
+[2016-11-20 16:30:27,217] [INFO] [server.transmit] -> request(303): 0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a ...
+[2016-11-20 16:30:28,151] [ERROR] [tcp.pre_test] -> Error: Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 57, in pre_test
+    sock.connect((self.host, self.port))
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 111] Connection refused
+
+[2016-11-20 16:30:28,154] [ERROR] [tcp.pre_test] -> Failed to connect to target server, retrying...
+[2016-11-20 16:30:29,161] [INFO] [base._test_info] -> Current test: 35
+[2016-11-20 16:30:29,163] [INFO] [server.transmit] -> request(79): 0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a0d0a202f696e6465782e68746d6c20485454502f ...
+[2016-11-20 16:30:29,579] [INFO] [base._test_info] -> Current test: 36
+[2016-11-20 16:30:29,582] [INFO] [server.transmit] -> request(51): 0d0a0d0a202f696e6465782e68746d6c20485454502f312e310d0a486f73743a203132372e302e302e313a383038380d0a0d ...
+[2016-11-20 16:30:30,515] [ERROR] [tcp.pre_test] -> Error: Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 57, in pre_test
+    sock.connect((self.host, self.port))
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 111] Connection refused
+
+[2016-11-20 16:30:30,516] [ERROR] [tcp.pre_test] -> Failed to connect to target server, retrying...
+[2016-11-20 16:30:31,522] [INFO] [base._test_info] -> Current test: 37
+[2016-11-20 16:30:31,524] [INFO] [server.transmit] -> request(1071): 0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a ...
+[2016-11-20 16:30:31,940] [INFO] [base._test_info] -> Current test: 38
+[2016-11-20 16:30:31,945] [INFO] [server.transmit] -> request(175): 0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a ...
+[2016-11-20 16:30:32,878] [ERROR] [tcp.pre_test] -> Error: Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 57, in pre_test
+    sock.connect((self.host, self.port))
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 111] Connection refused
+
+[2016-11-20 16:30:32,879] [ERROR] [tcp.pre_test] -> Failed to connect to target server, retrying...
+[2016-11-20 16:30:33,883] [INFO] [base._test_info] -> Current test: 39
+[2016-11-20 16:30:33,885] [INFO] [server.transmit] -> request(63): 0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a202f696e6465782e68746d6c20485454502f312e310d0a486f73743a203132372e30 ...
+[2016-11-20 16:30:34,304] [INFO] [base._test_info] -> Current test: 40
+[2016-11-20 16:30:34,307] [INFO] [server.transmit] -> request(49): 0a0a202f696e6465782e68746d6c20485454502f312e310d0a486f73743a203132372e302e302e313a383038380d0a0d0a
+[2016-11-20 16:30:35,254] [ERROR] [tcp.pre_test] -> Error: Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 57, in pre_test
+    sock.connect((self.host, self.port))
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+error: [Errno 111] Connection refused
+
+[2016-11-20 16:30:35,258] [ERROR] [tcp.pre_test] -> Failed to connect to target server, retrying...
+[2016-11-20 16:30:36,186] [ERROR] [server._start] -> Error occurred while fuzzing: AttributeError("'WebInterface' object has no attribute '_server'",)
+[2016-11-20 16:30:36,188] [ERROR] [server._start] -> Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/kitty/fuzzers/server.py", line 43, in _start
+    self._run_sequence(sequence)
+  File "/usr/local/lib/python2.7/dist-packages/kitty/fuzzers/server.py", line 64, in _run_sequence
+    self._pre_test()
+  File "/usr/local/lib/python2.7/dist-packages/kitty/fuzzers/base.py", line 332, in _pre_test
+    self.target.pre_test(self.model.current_index())
+  File "/usr/local/lib/python2.7/dist-packages/katnip/targets/tcp.py", line 63, in pre_test
+    time.sleep(1)
+  File "/usr/local/lib/python2.7/dist-packages/kitty/fuzzers/base.py", line 504, in _exit_now
+    self.stop()
+  File "/usr/local/lib/python2.7/dist-packages/kitty/fuzzers/base.py", line 440, in stop
+    self.user_interface.stop()
+  File "/usr/local/lib/python2.7/dist-packages/kitty/interfaces/base.py", line 101, in stop
+    self._stop()
+  File "/usr/local/lib/python2.7/dist-packages/kitty/interfaces/web.py", line 297, in _stop
+    self._server.shutdown()
+AttributeError: 'WebInterface' object has no attribute '_server'
+
+[2016-11-20 16:30:36,188] [INFO] [base._end_message] -> 
+                         --------------------------------------------------
+                         Finished fuzzing session
+                         Target: TcpTarget
+
+                         Tested 42 mutations
+                         Mutation range: 0 to 41
+                         Failure count: 0
+                         --------------------------------------------------
+            

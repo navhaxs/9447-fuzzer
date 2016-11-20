@@ -1,0 +1,27 @@
+Template(name='HTTP_GET_MONKEY_2', fields=[
+    String('GET', name='Method', fuzzable= True),
+    Delimiter(' ', name='space1', fuzzable= True),              
+    String('/imgs/monkey_logo.png', name='path', fuzzable= True),         
+    Delimiter(' ', name='space2', fuzzable= True),             
+    String('HTTP', name='protocol name', fuzzable= True),      
+    Delimiter('/', name='fws1', fuzzable= False),               
+    Dword(1, name='major version', encoder=ENC_INT_DEC, fuzzable= True),
+    Delimiter('.', name='dot1', fuzzable= False),               
+    Dword(1, name='minor version', encoder=ENC_INT_DEC, fuzzable= True),
+    Delimiter('\r\n', name='newLine1', fuzzable= True),
+    # host
+    String('Host:', name='host field', fuzzable= True),
+    Delimiter(' ', name='space3', fuzzable= True),  
+    String('127.0.0.1', name='hostURL', fuzzable= True),
+    Delimiter(':', name='colon', fuzzable= True),  
+    Dword(8088, name='hostPort', encoder=ENC_INT_DEC, fuzzable= True),
+    Delimiter('\r\n', name='newLine2', fuzzable= True),
+    # Range
+    String('Range: bytes=', name='Range field', fuzzable= True),
+    Delimiter(' ', name='space4', fuzzable= True),  
+    Dword(79818, name='byteStart', encoder=ENC_INT_DEC, fuzzable= True),
+    Delimiter('-', name='dash', fuzzable= True),  
+    Dword(79818, name='byteEnd', encoder=ENC_INT_DEC, fuzzable= True),
+    #end of message
+    Delimiter('\r\n\r\n', name='eom', fuzzable= True),
+])
