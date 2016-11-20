@@ -199,11 +199,8 @@ def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target
             logger=None)
     target.set_controller(controller)
 
-<<<<<<< HEAD
-    session = str(datetime.datetime().now());
-=======
-    session = str(datetime.now())
->>>>>>> ac62d21633a47140e88652d2f95b8490b5717c04
+    # The session is the timestamp 
+    session = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 
     # Define network controller to generate pcap files only if option is set
     if capture_packets:
@@ -241,6 +238,7 @@ parser.add_argument('-s', '--start', help='start command for main process')
 parser.add_argument('-t', '--stop', help='stop command for main process')
 parser.add_argument('-p', '--port', type=int, help='server port')
 parser.add_argument('-i', '--interface', help='name of netowrk interface to be monitored') 
+parser.add_argument('-w', '--webuiport', help='port of web monitoring ui')
 parser.add_argument('template', nargs='+', help='file containing a http request template as specified by kitty')
 args = parser.parse_args()
 
@@ -258,13 +256,17 @@ if args.start == None:
 if args.stop == None:
     print 'Error: Main process stop command not specified'
     exit = True
+if args.webuiport == None:
+    webuiport = 26000
+else:
+    webuiport = args.webuiport
 if args.interface == None:
-    print 'Error: Network interface not specified'
-    exit = True
+    network_interface = 'lo' # default to loopback
+else:
+    network_interface = args.interface 
 
 if exit:
     sys.exit(2)
-
 
 main_process = args.main
 start_cmd = args.start
@@ -273,7 +275,7 @@ start_target_port = args.port
 
 if args.interface != 'None' or args.interface != 'none':
     capture_packets = True
-    network_interface = args.interface
+    
     if not os.path.isdir('./pcaps/'):
         try:
             subprocess.check_call(['mkdir', 'pcaps'])
@@ -288,12 +290,12 @@ else:
 host = '127.0.0.1'
 
 web_inter_host = '0.0.0.0'
-start_web_interface_port = 26000
+start_web_interface_port = webuiport
 analyser = Packet_analyser(4)
 
 for t in args.template:
-    fuzz(template = t, target_host = host, target_port = start_target_port, web_interface_host = web_inter_host, web_interface_port = start_web_interface_port)
-    start_target_port += 1
+    fuzz(template=t, target_host=host, target_port=start_target_port, web_interface_host=web_inter_host, web_interface_port=start_web_interface_port)
+    start_target_port += 1 # Does not actually work, since you have to configure the server itself to change its port.
     start_web_interface_port += 1
 
 analyser.exit()
