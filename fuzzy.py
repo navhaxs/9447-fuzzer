@@ -14,7 +14,6 @@ from kitty.targets.server import ServerTarget
 from kitty.model import *
 from kitty.fuzzers import ServerFuzzer
 from kitty.controllers.base import BaseController
-# from katnip.controllers.client.process import MyController
 from katnip.targets.tcp import TcpTarget
 from kitty.interfaces import WebInterface
 from katnip.monitors.network import NetworkMonitor
@@ -32,7 +31,20 @@ from katnip.monitors.network import NetworkMonitor
 # Lastly is the actual fuzzer runner code.
 #
 # Usage: specify files containing templates as arguments
-
+# Options:
+# '-m', '--main', 'path to main process', compulsory argument
+# '-s', '--start','start command for main process', compulsory argument
+# '-t', '--stop', 'stop command for main process', compulsory argument
+# '-p', '--port', type=int, 'server port', compulsory argument
+# '-i', '--interface', 'name of netowrk interface to be monitored', optional argumeent, defaults to lo for local
+# '-w', '--webuiport', 'port of web monitoring ui', optional argument, defaults to 26000
+# 'template', 'file containing a http request template as specified by kitty', at least one argument
+#
+# Example: ./fuzzy.py -m /usr/local/apache/bin/apachectl -s start -t stop -p 8088 http_post_request_basic
+# It may be necessary to run as sudo
+#
+# Necessary packages can be installed by running the config.sh script
+#
 ################# Data Models #################
 
 # Data models given in files specified in arguments
@@ -49,7 +61,6 @@ Template(name='HTTP_GET_TEMPLATE', fields=[
 ])
 
 
-#### TO RUN THE CODE: ./fuzzy.py -m /usr/local/apache/bin/apachectl -s start -t stop -p 8088 http_post_request_basic ####
 """
 
 ################# Target #################

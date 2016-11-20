@@ -83,3 +83,4 @@ class Packet_analyser:
         _queue.join() will block until all tasks are complete
         '''
         self._queue.join()
+        print 'Packet_Analyser done, exiting'
