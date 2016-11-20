@@ -7,7 +7,7 @@ import sys
 import os
 import threading
 import argparse
-import packet_analyser
+from packet_analyser import Packet_analyser
 import datetime
 from subprocess import *
 from kitty.targets.server import ServerTarget
@@ -170,13 +170,12 @@ class MyMonitor(NetworkMonitor):
         :param logger: logger for the monitor instance
         '''
         super(NetworkMonitor, self).__init__(interface, dir_path + session + "/", name, logger)
-        self._analyser = analyser
+        self._analyser = Packet_analyser()
         self._session = session
 
     def post_test(self):
         super(NetworkMonitor, self).post_test()
-        if self._analyser != None:
-            self._analyser.push((session, self.test_number))
+        self._analyser.push((session, self.test_number))
 
 
 ################# Actual fuzzer runner code #################
@@ -186,7 +185,6 @@ global start_cmd
 global stop_cmd
 global network_interface
 global capture_packets
-global analyser
 
 def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target_port=25000,  web_interface_host='0.0.0.0', web_interface_port=26000):
 
@@ -201,7 +199,11 @@ def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target
             logger=None)
     target.set_controller(controller)
 
+<<<<<<< HEAD
     session = str(datetime.datetime().now());
+=======
+    session = str(datetime.now())
+>>>>>>> ac62d21633a47140e88652d2f95b8490b5717c04
 
     # Define network controller to generate pcap files only if option is set
     if capture_packets:
@@ -274,7 +276,7 @@ if args.interface != 'None' or args.interface != 'none':
     network_interface = args.interface
     if not os.path.isdir('./pcaps/'):
         try:
-            check_call(['mkdir', 'pcaps'])
+            subprocess.check_call(['mkdir', 'pcaps'])
         except CalledProcessError:
             print 'Error: pcaps directory does not exist and could not be created'
             print 'Network interface monitor not started'
@@ -283,13 +285,11 @@ else:
     capture_packets = False
     network_interface = None
 
-if capture_packets:
-    analyser = packet_analyser.Packet_analyser(4)
-
 host = '127.0.0.1'
 
 web_inter_host = '0.0.0.0'
 start_web_interface_port = 26000
+analyser = Packet_analyser(4)
 
 for t in args.template:
     fuzz(template = t, target_host = host, target_port = start_target_port, web_interface_host = web_inter_host, web_interface_port = start_web_interface_port)
