@@ -98,18 +98,19 @@ class MyController(BaseController):
 
         '''start the victim'''
         ## stop the process if it still runs for some reason
-        if self._process:
-            self._stop_process()
+        #if self._process:
+        #    self._stop_process()
 
-        ## start the process
-        self._process = Popen(self._server_start_cmd, stdout=PIPE, stderr=PIPE)
-	time.sleep(3)
+        if not self._process:
+            ## start the process
+            self._process = Popen(self._server_start_cmd, stdout=PIPE, stderr=PIPE)
+            time.sleep(3)
 
-        ## add process information to the report
-        self.report.add('process_name', self._process_name)
-        self.report.add('process_path', self._process_path)
-        self.report.add('process_args', self._process_args)
-        self.report.add('process_id', self._process.pid)
+            ## add process information to the report
+            self.report.add('process_name', self._process_name)
+            self.report.add('process_path', self._process_path)
+            self.report.add('process_args', self._process_args)
+            self.report.add('process_id', self._process.pid)
 
 
     def post_test(self):
