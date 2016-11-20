@@ -169,12 +169,12 @@ class MyMonitor(NetworkMonitor):
         :param name: name of the monitor
         :param logger: logger for the monitor instance
         '''
-        super(NetworkMonitor, self).__init__(interface, dir_path + session + "/", name, logger=None)
-        self._analyser = Packet_analyser()
+        NetworkMonitor.__init__(self, interface, dir_path + session + "/", name, logger)
+        self._analyser = analyser
         self._session = session
 
     def post_test(self):
-        super(NetworkMonitor, self).post_test()
+        NetworkMonitor.post_test(self)
         self._analyser.push((session, self.test_number))
 
 
