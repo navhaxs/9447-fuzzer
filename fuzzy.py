@@ -162,14 +162,22 @@ class MyController(BaseController):
 # Role of the monitor is to store pcaps which will be analysed separately
 
 class MyMonitor(NetworkMonitor):
-    def __init__(self, interface, dir_path, session, name, analyser, logger=None):
+    def __init__(self, interface, session, name, analyser, logger=None):
         '''
         :param interface: name of interface to listen to
         :param dir_path: path to store captured pcaps
         :param name: name of the monitor
         :param logger: logger for the monitor instance
         '''
-        NetworkMonitor.__init__(self, interface, dir_path + session + "/", name, logger)
+
+        path = './pcaps/' + session
+        if not os.path.isdir(path):
+            try:
+                check_call(['mkdir', path])
+            except CalledProcessError:
+                print 'Error: sessional pcaps directory does not exist and could not be created'
+
+        NetworkMonitor.__init__(self, interface, path + "/", name, logger)
         self._analyser = analyser
         self._session = session
 
@@ -205,7 +213,7 @@ def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target
 
     # Define network controller to generate pcap files only if option is set
     if capture_packets:
-        monitor = MyMonitor(interface=network_interface, dir_path='./pcaps/', session=session, name='myMonitor', analyser=analyser, logger=None)
+        monitor = MyMonitor(interface=network_interface, session=session, name='myMonitor', analyser=analyser, logger=None)
         target.add_monitor(monitor)
     
     # Define model
