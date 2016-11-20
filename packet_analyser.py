@@ -17,7 +17,7 @@ class Packet_analyser:
     _queue = None
     _max_threads = 0
     _workers = []
-    _error_codes = []
+    _error_codes = ["500 Internal Server Error", "502 Bad Gateway", "503 Service Unavailable", "504 Gateway Time-out"]
 
     def __init__(self, max_threads=4):
         self._queue = Queue.Queue()
