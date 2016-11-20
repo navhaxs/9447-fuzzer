@@ -71,6 +71,9 @@ class Packet_analyser:
                         r.close()
                     except:
                         print 'Could not open or write to' + report_name
+                        cap.close()
+
+                cap.close()
 
             self._queue.task_done()
 
