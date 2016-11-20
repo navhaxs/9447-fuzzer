@@ -28,9 +28,9 @@ class Packet_analyser:
             self._workers.append(t)
             t.start()
 
-    def push_item(self, to_do ):
+    def push(self, to_do):
         # to_do is a tuple containing the session id and the test number
-        _queue.put(to_do)
+        self._queue.put(to_do)
     
     def analyse_packet(self):
         while True:

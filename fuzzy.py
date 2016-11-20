@@ -183,7 +183,7 @@ class MyMonitor(NetworkMonitor):
 
     def post_test(self):
         NetworkMonitor.post_test(self)
-        self._analyser.push((session, self.test_number))
+        self._analyser.push((self._session, self.test_number))
 
 
 ################# Actual fuzzer runner code #################
@@ -225,7 +225,15 @@ def fuzz(template='http_get_request_template_1', target_host='127.0.0.1', target
 
     # Define fuzzer
     fuzzer = ServerFuzzer()
-    fuzzer.set_interface(WebInterface(host=web_interface_host, port=web_interface_port))
+
+    web_ui_port_set = False
+    while not web_ui_port_set:
+        try:
+            fuzzer.set_interface(WebInterface(host=web_interface_host, port=web_interface_port))
+            web_ui_port_set = True
+        except:
+            print 'Port ' + str(web_interface_port) + ' in use, trying new port'
+            web_interface_port += 100
     fuzzer.set_model(model)
     fuzzer.set_target(target)
     fuzzer.set_delay_between_tests(0.4)
