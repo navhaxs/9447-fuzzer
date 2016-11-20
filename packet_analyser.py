@@ -41,7 +41,7 @@ class Packet_analyser:
             cap = None
 
             try:
-                cap = pyshark.FileCapture(filename, display_filter='http', only_summaries = True) 
+                cap = pyshark.FileCapture(input_file=filename, keep_packets=False, display_filter='http', only_summaries = True) 
             except:
                 print 'File not found: ' + filename
 
@@ -67,9 +67,10 @@ class Packet_analyser:
                         r.write('Error: ' + error + '\n')
                         r.write('Summary: \n')
                         r.write(str(c))
+                        r.write('\n')
                         r.close()
                     except:
-                        print 'Could not open ' + report_name
+                        print 'Could not open or write to' + report_name
 
             self._queue.task_done()
 
